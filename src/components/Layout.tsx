@@ -1,9 +1,8 @@
-import { HandCoins, HandPlatter } from "lucide-react";
+import { HandCoins, HandPlatter, User } from "lucide-react";
 import { NavLink, Outlet, useMatches } from "react-router-dom";
 
 export default function Layout() {
     const matches = useMatches()
-
     
     return <div className="flex flex-col h-screen pb-20">
         <div className="grow p-4 overflow-y-auto">
@@ -24,6 +23,11 @@ export default function Layout() {
             <NavLink to={"/layanan"} className={`${matches[matches.length - 1].pathname === "/layanan" && "dock-active"}`}>
                 <HandPlatter className="size-[1.2rem]" />
                 <span className="dock-label">Layanan</span>
+            </NavLink>
+
+            <NavLink to={"/profil"} className={`${matches[matches.length - 1].pathname === "/profil" && "dock-active"}`}>
+                <User className="size-[1.2rem]" />
+                <span className="dock-label">Profile</span>
             </NavLink>
         </div>
     </div>

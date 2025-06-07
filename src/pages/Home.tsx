@@ -1,8 +1,17 @@
 import dayjs from "dayjs";
 import { NavLink } from "react-router-dom";
+import { Bar } from "react-chartjs-2";
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
-} from "recharts";
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
+  type ChartOptions,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function Home() {
     return (
@@ -68,7 +77,6 @@ export default function Home() {
     );
 }
 
-// Mock data pendapatan 30 hari terakhir
 const data = [
   { day: "1 Jun", revenue: 1200000 },
   { day: "2 Jun", revenue: 950000 },
@@ -103,25 +111,52 @@ const data = [
 ];
 
 const RevenueChart: React.FC = () => {
+  // Siapkan data untuk Chart.js
+  const chartData = {
+    labels: data.map((d) => d.day),
+    datasets: [
+      {
+        label: "Pendapatan",
+        data: data.map((d) => d.revenue),
+        backgroundColor: "#3b82f6",
+        borderRadius: 4,
+        barPercentage: 0.7,
+        categoryPercentage: 0.8,
+      },
+    ],
+  };
+
+  const options: ChartOptions<"bar"> = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `Rp${ctx.parsed.y.toLocaleString("id")}`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: { font: { size: 10 } },
+        grid: { display: false },
+      },
+      y: {
+        ticks: {
+          font: { size: 10 },
+          callback: (value) => `Rp${(+value / 1000).toLocaleString("id")}k`,
+        },
+        grid: { color: "#eee" },
+      },
+    },
+  };
+
   return (
-    <div className="bg-base-100 p-2 sm:p-4 rounded-2xl shadow w-full">
-      <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-4">Pendapatan Bulan Ini</h2>
-      <ResponsiveContainer width="100%" height={220} minWidth={200}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="day" hide={window.innerWidth < 640} />
-          <YAxis tickFormatter={(value) => `Rp${(value / 1000).toLocaleString()}k`} />
-          <Tooltip formatter={(value: number) => `Rp${value.toLocaleString()}`} />
-          <Line
-            type="monotone"
-            dataKey="revenue"
-            stroke="#3b82f6"
-            strokeWidth={3}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="bg-base-100 p-2 sm:p-3 rounded-2xl w-full">
+      <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Pendapatan Bulan Ini</h2>
+      <div className="w-full" style={{ minHeight: 180 }}>
+        <Bar data={chartData} options={options} height={180} />
+      </div>
     </div>
   );
 };
