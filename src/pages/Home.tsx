@@ -10,71 +10,91 @@ import {
   Legend,
   type ChartOptions,
 } from "chart.js";
+import { Eye, Plus } from "lucide-react";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function Home() {
-    return (
-      <div className="container mx-auto max-w-4xl px-2">
-        <div className="font-semibold text-xl">
-            <span>Welcome </span>
-            <span className="text-sky-500">Wirawan</span>
-        </div>
+  return (
+    <div className="container mx-auto max-w-4xl px-2">
+      <div className="font-semibold text-xl">
+        <span>Welcome </span>
+        <span className="text-sky-500">Wirawan</span>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-            <span className="font-bold text-lg col-span-1 sm:col-span-2">Info Bulan Ini</span>
-            <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-primary text-primary-content">
-                <span className="font-semibold">40 Order</span>
-                <span>Hari Ini</span>
-            </div>
-            <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-warning text-warning-content">
-                <span className="font-semibold">1</span>
-                <span>Sedang Diproses</span>
-            </div>
-            <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-success text-success-content">
-                <span className="font-semibold">Rp {Number(1_400_000).toLocaleString("id")}</span>
-                <span>Pendapatan</span>
-            </div>
-            <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-info text-info-content">
-                <span className="font-semibold">120</span>
-                <span>Pelanggan</span>
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
+        <span className="font-bold text-lg col-span-1 sm:col-span-2">Info Bulan Ini</span>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-primary text-primary-content">
+          <span className="font-semibold">40 Order</span>
+          <span>Hari Ini</span>
         </div>
-
-        <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-            <h2 className="font-bold text-lg">Daftar Orderan Terbaru</h2>
-            <div className="overflow-x-auto w-full">
-                <table className="table table-zebra text-xs min-w-[400px] sm:min-w-[600px]">
-                    <thead>
-                        <tr className="text-center">
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Tanggal Dibuat</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>1</th>
-                            <td>Wirawan</td>
-                            <td>{dayjs().format("D/M/YYYY HH:mm")}</td>
-                            <td>
-                              <NavLink to={"#"} className={"badge badge-warning text-xs"}>
-                                Detail
-                              </NavLink>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-warning text-warning-content">
+          <span className="font-semibold">1</span>
+          <span>Sedang Diproses</span>
         </div>
-
-        <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-            <h2 className="font-bold text-lg">Pengingat</h2>
-            <RevenueChart />
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-success text-success-content">
+          <span className="font-semibold">Rp {Number(1_400_000).toLocaleString("id")}</span>
+          <span>Pendapatan</span>
+        </div>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-info text-info-content">
+          <span className="font-semibold">120</span>
+          <span>Pelanggan</span>
         </div>
       </div>
-    );
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
+        <span className="font-bold text-lg col-span-1 sm:col-span-2">Akses Cepat</span>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-primary text-primary-content">
+          <Eye />
+          <span>View Layanan</span>
+        </div>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-warning text-warning-content">
+          <Eye />
+          <span>View Pesanan</span>
+        </div>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-success text-success-content">
+          <Plus />
+          <span>Tambah Layanan</span>
+        </div>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-info text-info-content">
+          <Plus />
+          <span>Tambah Pesanan</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
+        <h2 className="font-bold text-lg">Daftar Orderan Terbaru</h2>
+        <div className="overflow-x-auto w-full">
+          <table className="table table-zebra text-xs min-w-[400px] sm:min-w-[600px] text-center">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Tanggal Dibuat</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>1</th>
+                <td>Wirawan</td>
+                <td>{dayjs().format("D/M/YYYY HH:mm")}</td>
+                <td>
+                  <NavLink to={"#"} className={"badge badge-warning text-xs"}>
+                    Detail
+                  </NavLink>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
+        <h2 className="font-bold text-lg">Pengingat</h2>
+        <RevenueChart />
+      </div>
+    </div>
+  );
 }
 
 const data = [
@@ -110,6 +130,8 @@ const data = [
   { day: "30 Jun", revenue: 1800000 },
 ];
 
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 const RevenueChart: React.FC = () => {
   // Siapkan data untuk Chart.js
   const chartData = {
