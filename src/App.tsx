@@ -1,11 +1,18 @@
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login";
 import Pesanan from "./pages/Pesanan";
 import Profil from "./pages/Profile";
+import {
+  createBrowserRouter,
+  // createHashRouter,
+  createRoutesFromElements, 
+  Route, 
+  RouterProvider
+} from "react-router-dom";
 import Layanan from "./pages/Layanan";
 
+// const router = createHashRouter(
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
