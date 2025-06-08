@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-import { NavLink } from "react-router-dom";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,7 +8,12 @@ import {
   Legend,
   type ChartOptions,
 } from "chart.js";
-import { Eye, Plus } from "lucide-react";
+import { GiWashingMachine } from "react-icons/gi";
+
+import layananIcon from "../assets/img/layanan.png"
+import addLayananIcon from "../assets/img/add-layanan.png"
+import pesananIcon from "../assets/img/pesanan.png"
+import addPesananIcon from "../assets/img/add-pesanan.png"
 
 
 export default function Home() {
@@ -22,7 +25,7 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <span className="font-bold text-lg col-span-1 sm:col-span-2">Info Bulan Ini</span>
+        <span className="font-bold text-lg col-span-1 sm:col-span-2">Info Hari Ini</span>
         <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-primary text-primary-content">
           <span className="font-semibold">40 Order</span>
           <span>Hari Ini</span>
@@ -41,56 +44,75 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <span className="font-bold text-lg col-span-1 sm:col-span-2">Akses Cepat</span>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-primary text-primary-content">
-          <Eye />
-          <span>View Layanan</span>
-        </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-warning text-warning-content">
-          <Eye />
-          <span>View Pesanan</span>
-        </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-success text-success-content">
-          <Plus />
-          <span>Tambah Layanan</span>
-        </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 items-center bg-info text-info-content">
-          <Plus />
-          <span>Tambah Pesanan</span>
+      <div className="flex flex-col justify-between mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg text-xs">
+        <span className="font-bold text-lg col-span-4">Akses Cepat</span>
+        <div className="flex justify-between">
+          <div className="grid grid-cols-2 text-center">
+            <span className="col-span-2 font-semibold">Pesanan</span>
+            <div className="flex flex-col items-center">
+              <img className="w-2/3" src={pesananIcon} alt="view-pesanan" />
+              <span>Detail</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <img className="w-2/3" src={addPesananIcon} alt="tambah-pesanan" />
+              <span>Tambah</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 text-center">
+            <span className="col-span-2 font-semibold">Layanan</span>
+            <div className="flex flex-col items-center">
+              <img className="w-2/3" src={layananIcon} alt="view-layanan" />
+              <span>Detail</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <img className="w-2/3" src={addLayananIcon} alt="tambah-layanan" />
+              <span>Tambah</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
         <h2 className="font-bold text-lg">Daftar Orderan Terbaru</h2>
-        <div className="overflow-x-auto w-full">
-          <table className="table table-zebra text-xs min-w-[400px] sm:min-w-[600px] text-center">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Tanggal Dibuat</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th>1</th>
-                <td>Wirawan</td>
-                <td>{dayjs().format("D/M/YYYY HH:mm")}</td>
-                <td>
-                  <NavLink to={"#"} className={"badge badge-warning text-xs"}>
-                    Detail
-                  </NavLink>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div className="flex items-center p-3 text-sm shadow">
+          <div className="p-1 rounded mr-7">
+            <GiWashingMachine size={32} />
+          </div>
+          <div className="flex flex-col mr-auto">
+            <span className="font-semibold">Pesanan No #12343</span>
+            <span>Rp 200.000</span>
+          </div>
+          <div className="badge badge-primary">Detail</div>
         </div>
+
+        <div className="flex items-center p-3 text-sm shadow">
+          <div className="p-1 rounded mr-7">
+            <GiWashingMachine size={32} />
+          </div>
+          <div className="flex flex-col mr-auto">
+            <span className="font-semibold">Pesanan No #12343</span>
+            <span>Rp 200.000</span>
+          </div>
+          <div className="badge badge-primary">Detail</div>
+        </div>
+
+        <div className="flex items-center p-3 text-sm shadow">
+          <div className="p-1 rounded mr-7">
+            <GiWashingMachine size={32} />
+          </div>
+          <div className="flex flex-col mr-auto">
+            <span className="font-semibold">Pesanan No #12343</span>
+            <span>Rp 200.000</span>
+          </div>
+          <div className="badge badge-primary">Detail</div>
+        </div>
+
       </div>
 
       <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <h2 className="font-bold text-lg">Pengingat</h2>
+        <h2 className="font-bold text-lg">Bisnis Info</h2>
         <RevenueChart />
       </div>
     </div>
@@ -177,7 +199,7 @@ const RevenueChart: React.FC = () => {
     <div className="bg-base-100 p-2 sm:p-3 rounded-2xl w-full">
       <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Pendapatan Bulan Ini</h2>
       <div className="w-full" style={{ minHeight: 180 }}>
-        <Bar data={chartData} options={options} height={180} />
+        <Bar data={chartData} options={options} height={180} className="text-base-content" />
       </div>
     </div>
   );
