@@ -1,8 +1,15 @@
 import dayjs from "dayjs";
-import { GiWashingMachine } from "react-icons/gi";
+import pesananIcon from "../assets/img/pesanan.png"
+import { IoAdd } from "react-icons/io5";
 
 export default function Pesanan() {
     return <div className="container mx-auto max-w-4xl px-2 text-xs flex flex-col gap-y-3">
+        <div className="flex justify-between">
+            <h2 className="font-bold text-xl">Pesanan</h2>
+            <button className="btn btn-sm bg-white">
+                <IoAdd size={16} />
+            </button>
+        </div>
         <Filter />
 
         <Card />
@@ -27,7 +34,7 @@ export default function Pesanan() {
 
 function Card() {
     return <div className="grid grid-cols-5 gap-2 bg-white shadow rounded-md p-3">
-        <GiWashingMachine className="row-span-2 h-full w-full" />
+        <img src={pesananIcon} alt="icon-pesanan" className="row-span-2 w-full my-auto" />
         <div className="flex justify-between items-center w-full col-span-4">
             <div className="flex justify-between w-full items-center">
                 <div className="flex flex-col justify-between">
