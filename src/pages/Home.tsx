@@ -19,7 +19,7 @@ import addPesananIcon from "../assets/img/add-pesanan.png"
 export default function Home() {
   return (
     <div className="container mx-auto max-w-4xl px-2">
-      <div className="font-semibold text-xl">
+      <div className="font-bold text-xl">
         <span>Welcome </span>
         <span className="text-sky-500">Wirawan</span>
       </div>
@@ -84,7 +84,7 @@ export default function Home() {
             <span className="font-semibold">Pesanan No #12343</span>
             <span>Rp 200.000</span>
           </div>
-          <div className="badge badge-primary">Detail</div>
+          <div className="btn btn-primary btn-xs">Detail</div>
         </div>
 
         <div className="flex items-center p-3 text-sm shadow">
@@ -95,7 +95,7 @@ export default function Home() {
             <span className="font-semibold">Pesanan No #12343</span>
             <span>Rp 200.000</span>
           </div>
-          <div className="badge badge-primary">Detail</div>
+          <div className="btn btn-primary btn-xs">Detail</div>
         </div>
 
         <div className="flex items-center p-3 text-sm shadow">
@@ -106,7 +106,7 @@ export default function Home() {
             <span className="font-semibold">Pesanan No #12343</span>
             <span>Rp 200.000</span>
           </div>
-          <div className="badge badge-primary">Detail</div>
+          <div className="btn btn-primary btn-xs">Detail</div>
         </div>
 
       </div>
@@ -197,7 +197,7 @@ const RevenueChart: React.FC = () => {
 
   return (
     <div className="bg-base-100 p-2 sm:p-3 rounded-2xl w-full">
-      <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Pendapatan Bulan Ini</h2>
+      <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Grafik Pendapatan Bulan Ini</h2>
       <div className="w-full" style={{ minHeight: 180 }}>
         <Bar data={chartData} options={options} height={180} className="text-base-content" />
       </div>
