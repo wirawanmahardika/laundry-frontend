@@ -12,17 +12,11 @@ export default function Pesanan() {
         </div>
         <Filter />
 
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        <Card status="pelanggan" />
+        <Card status="pelanggan" />
+        <Card status="tamu" />
+        <Card status="tamu" />
+
 
         <div className="join mx-auto">
             <button className="join-item btn bg-white">«</button>
@@ -32,22 +26,23 @@ export default function Pesanan() {
     </div>
 }
 
-function Card() {
+function Card({status}: {status: "pelanggan" | "tamu"}) {
     return <div className="grid grid-cols-5 gap-2 bg-white shadow rounded-md p-3">
         <img src={pesananIcon} alt="icon-pesanan" className="row-span-2 w-full my-auto" />
-        <div className="flex justify-between items-center w-full col-span-4">
-            <div className="flex justify-between w-full items-center">
-                <div className="flex flex-col justify-between">
-                    <span className=" font-semibold text-sm">Wirawan</span>
-                    <span className="">Rp {(21_000).toLocaleString("id")}</span>
-                </div>
-                <span>{dayjs().format("D MMM YYYY")}</span>
+        <div className="flex justify-between w-full col-span-4">
+            <div className="flex flex-col justify-between font-medium">
+                <span className="font-bold text-sm">Wirawan</span>
+                <span>Biaya : <span className="font-normal text-primary">Rp {(21_000).toLocaleString("id")}</span></span>
+                <span>Dibuat Pada : <span className="font-normal text-primary">{dayjs().format("D MMM")}</span></span>
+                <span>Estimasi Selesai : <span className="font-normal text-primary">{dayjs().format("D MMM")}</span></span>
             </div>
+            <button disabled className={`badge badge-xs capitalize ${status === "pelanggan" ? "badge-primary" : "badge-secondary"}`}>{status}</button>
         </div>
-        <div className="flex justify-end gap-x-2 w-full col-span-4">
-            <button className="btn btn-error btn-xs">Hapus</button>
+        <div className="flex justify-between gap-x-2 w-full col-span-4">
+            <button className="btn btn-success btn-xs">Whatsapp</button>
             <button className="btn btn-warning btn-xs">Ubah</button>
-            <button className="btn btn-success btn-xs">Detail</button>
+            <button className="btn btn-accent btn-xs">Detail</button>
+            <button className="btn btn-error btn-xs">Hapus</button>
         </div>
     </div>
 }

@@ -44,7 +44,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col justify-between mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg text-xs">
+      <div className="flex flex-col justify-between mt-5 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg text-xs">
         <span className="font-bold text-lg col-span-4">Akses Cepat</span>
         <div className="flex justify-between">
           <div className="grid grid-cols-2 text-center">
@@ -151,7 +151,6 @@ const data = [
   { day: "29 Jun", revenue: 1710000 },
   { day: "30 Jun", revenue: 1800000 },
 ];
-
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 const RevenueChart: React.FC = () => {
