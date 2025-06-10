@@ -1,14 +1,15 @@
 import dayjs from "dayjs";
-import pesananIcon from "../assets/img/pesanan.png"
+import pesananIcon from "../../assets/img/pesanan.png"
 import { IoAdd } from "react-icons/io5";
+import { NavLink } from "react-router-dom";
 
 export default function Pesanan() {
     return <div className="container mx-auto max-w-4xl px-2 text-xs flex flex-col gap-y-3">
         <div className="flex justify-between">
             <h2 className="font-bold text-xl">Pesanan</h2>
-            <button className="btn btn-sm bg-white">
+            <NavLink to={"/pesanan/tambah"} className="btn btn-sm bg-white">
                 <IoAdd size={16} />
-            </button>
+            </NavLink>
         </div>
         <Filter />
 
