@@ -10,7 +10,8 @@ import {
   Route, 
   RouterProvider
 } from "react-router-dom";
-import Layanan from "./pages/Layanan";
+import Layanan from "./pages/layanan/Layanan";
+import TambahLayanan from "./pages/layanan/TambahLayanan";
 
 // const router = createHashRouter(
 const router = createBrowserRouter(
@@ -21,7 +22,9 @@ const router = createBrowserRouter(
         <Route index element={<Home />} />
         <Route path="pesanan" element={<Pesanan />} />
         <Route path="profil" element={<Profil />} />
+
         <Route path="layanan" element={<Layanan />} />
+        <Route path="layanan/tambah" element={<TambahLayanan />} />
       </Route>
     </>
   )
