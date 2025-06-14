@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 export default function Profil() {
     return (
         <div className="container mx-auto max-w-2xl px-4 py-8 flex flex-col gap-y-6 items-center">
@@ -20,7 +22,7 @@ export default function Profil() {
                         <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path fill="#0ea5e9" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4Zm0 2c-2.67 0-8 1.34-8 4v2c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-2c0-2.66-5.33-4-8-4Z" /></svg>
                         Account Details
                     </h2>
-                    <button className="btn btn-accent btn-xs rounded-full px-4 shadow">Edit Profile</button>
+                    <NavLink to={"/profil/edit"} className="btn btn-accent btn-xs rounded-full px-4 shadow">Edit Profile</NavLink>
                 </div>
                 <hr className="border-slate-200" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2 text-slate-700 text-sm">

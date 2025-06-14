@@ -73,6 +73,18 @@ export default function EditProfil() {
                 </div>
                 <h2 className="font-bold text-xl text-sky-700 mb-2">Edit Profil</h2>
                 <div className="flex flex-col gap-y-1 w-full">
+                    <label className="font-semibold text-slate-600">Nama</label>
+                    <input
+                        type="text"
+                        name="name"
+                        className="input input-bordered w-full"
+                        placeholder="Nama singkat"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="flex flex-col gap-y-1 w-full">
                     <label className="font-semibold text-slate-600">Nama Lengkap</label>
                     <input
                         type="text"
@@ -80,18 +92,6 @@ export default function EditProfil() {
                         className="input input-bordered w-full"
                         placeholder="Nama lengkap"
                         value={form.fullname}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className="flex flex-col gap-y-1 w-full">
-                    <label className="font-semibold text-slate-600">Nama (Singkat)</label>
-                    <input
-                        type="text"
-                        name="name"
-                        className="input input-bordered w-full"
-                        placeholder="Nama singkat"
-                        value={form.name}
                         onChange={handleChange}
                         required
                     />
