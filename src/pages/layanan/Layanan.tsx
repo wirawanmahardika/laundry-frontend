@@ -120,7 +120,7 @@ function Card({ name, price, satuan, addedAt, onDelete }: CardProps) {
                     <span className="text-xs text-slate-400">Ditambahkan: {addedAt}</span>
                     <div className="flex gap-x-2">
                         <button className="btn btn-xs btn-error rounded-full shadow" onClick={onDelete}>Hapus</button>
-                        <button className="btn btn-xs btn-warning rounded-full shadow">Ubah</button>
+                        <NavLink to={"/layanan/edit"} className="btn btn-xs btn-warning rounded-full shadow">Edit</NavLink>
                     </div>
                 </div>
             </div>
