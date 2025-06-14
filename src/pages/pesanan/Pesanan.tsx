@@ -10,8 +10,8 @@ export default function Pesanan() {
 
     // Dummy data, ganti dengan data asli jika ada
     const pesananList = [
-        { id: "P001", name: "Wirawan", biaya: 21000, status: "pelanggan", dibuat: dayjs().format("D MMM"), selesai: dayjs().add(2, "day").format("D MMM") },
-        { id: "P002", name: "Budi", biaya: 25000, status: "pelanggan", dibuat: dayjs().subtract(1, "day").format("D MMM"), selesai: dayjs().add(1, "day").format("D MMM") },
+        { id: "P001", name: "Wirawan", biaya: 21000, status: "member", dibuat: dayjs().format("D MMM"), selesai: dayjs().add(2, "day").format("D MMM") },
+        { id: "P002", name: "Budi", biaya: 25000, status: "member", dibuat: dayjs().subtract(1, "day").format("D MMM"), selesai: dayjs().add(1, "day").format("D MMM") },
         { id: "P003", name: "Tamu", biaya: 15000, status: "tamu", dibuat: dayjs().subtract(2, "day").format("D MMM"), selesai: dayjs().add(3, "day").format("D MMM") },
         { id: "P004", name: "Tamu", biaya: 18000, status: "tamu", dibuat: dayjs().subtract(3, "day").format("D MMM"), selesai: dayjs().add(4, "day").format("D MMM") },
     ];
@@ -46,7 +46,7 @@ export default function Pesanan() {
                         id={p.id}
                         name={p.name}
                         biaya={p.biaya}
-                        status={p.status as "pelanggan" | "tamu"}
+                        status={p.status as "member" | "tamu"}
                         dibuat={p.dibuat}
                         selesai={p.selesai}
                         onDelete={() => handleDelete(p.id)}
@@ -93,13 +93,16 @@ type CardProps = {
     id: string;
     name: string;
     biaya: number;
-    status: "pelanggan" | "tamu";
+    status: "member" | "tamu";
     dibuat: string;
     selesai: string;
     onDelete?: () => void;
 };
 
 function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps) {
+    // Dummy: anggap pesanan dengan id genap sudah dibayar, ganjil belum
+    const sudahDibayar = id.endsWith("2") || id.endsWith("4");
+
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex flex-col items-center justify-center">
@@ -109,8 +112,13 @@ function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps)
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
                     <span className="font-semibold text-base text-slate-800">{name}</span>
-                    <div className="text-xs text-slate-500 mt-1">
-                        Biaya: <span className="font-medium text-sky-600">Rp {biaya.toLocaleString("id")}</span>
+                    <div className="flex gap-2 mt-1">
+                        <span className="text-xs text-slate-500">
+                            Biaya: <span className="font-medium text-sky-600">Rp {biaya.toLocaleString("id")}</span>
+                        </span>
+                        <span className={`badge badge-xs ${sudahDibayar ? "badge-success" : "badge-warning"} font-semibold`}>
+                            {sudahDibayar ? "Sudah Dibayar" : "Belum Dibayar"}
+                        </span>
                     </div>
                     <div className="text-xs text-slate-400">
                         Dibuat: <span className="font-medium">{dibuat}</span>
@@ -120,7 +128,7 @@ function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps)
                 </div>
                 <button
                     disabled
-                    className={`badge badge-xs capitalize ${status === "pelanggan" ? "badge-primary" : "badge-secondary"} px-3 py-2`}
+                    className={`badge badge-xs capitalize ${status === "member" ? "badge-primary" : "badge-secondary"} px-3 py-2`}
                 >
                     {status}
                 </button>
