@@ -6,7 +6,7 @@ import { NavLink, Outlet } from "react-router-dom";
 export default function Layout() {
     return (
         <div className="flex flex-col h-screen pb-20">
-            <div className="grow p-4 overflow-y-auto bg-base-200">
+            <div className="grow p-4 overflow-y-auto">
                 <Outlet />
             </div>
 

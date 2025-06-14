@@ -17,13 +17,31 @@ export default function Member() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {[...Array(8)].map((_, i) => (
-                    <Card
-                        key={i}
-                        name="Wirawan"
-                        joinedAt={dayjs().subtract(i, "month").format("D MMM YYYY")}
-                    />
-                ))}
+                {/* Contoh data, bisa diganti dengan data asli */}
+                <Card
+                    name="Wirawan"
+                    joinedAt={dayjs().subtract(1, "month").format("D MMM YYYY")}
+                    email="wirawan@email.com"
+                    phone="08123456789"
+                />
+                <Card
+                    name="Tanpa Email"
+                    joinedAt={dayjs().subtract(2, "month").format("D MMM YYYY")}
+                    email=""
+                    phone="08123456789"
+                />
+                <Card
+                    name="Tanpa HP"
+                    joinedAt={dayjs().subtract(3, "month").format("D MMM YYYY")}
+                    email="nohp@email.com"
+                    phone=""
+                />
+                <Card
+                    name="Tanpa Email & HP"
+                    joinedAt={dayjs().subtract(4, "month").format("D MMM YYYY")}
+                    email=""
+                    phone=""
+                />
             </div>
 
             <div className="join mx-auto mt-4">
@@ -44,9 +62,11 @@ export default function Member() {
 type CardProps = {
     name: string;
     joinedAt: string;
+    email?: string;
+    phone?: string;
 };
 
-function Card({ name, joinedAt }: CardProps) {
+function Card({ name, joinedAt, email, phone }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -57,6 +77,22 @@ function Card({ name, joinedAt }: CardProps) {
                     <span className="font-semibold text-base text-slate-800">{name}</span>
                     <div className="text-xs text-slate-500 mt-1">
                         Bergabung pada <span className="font-medium text-sky-600">{joinedAt}</span>
+                    </div>
+                    <div className="flex flex-col gap-y-1 mt-1">
+                        <span className="flex items-center gap-x-1">
+                            <svg className="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07 7.07-1.42-1.42M6.34 6.34 4.93 4.93m12.02 0-1.41 1.41M6.34 17.66l-1.41 1.41" /></svg>
+                            {email
+                                ? <span className="text-slate-700">{email}</span>
+                                : <span className="italic text-rose-400">Tidak ada email</span>
+                            }
+                        </span>
+                        <span className="flex items-center gap-x-1">
+                            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M2 2h20v20H2z" fill="none"/><path d="M6 8h12M6 12h8m-8 4h4" /></svg>
+                            {phone
+                                ? <span className="text-slate-700">{phone}</span>
+                                : <span className="italic text-rose-400">Tidak ada nomor HP</span>
+                            }
+                        </span>
                     </div>
                 </div>
                 <div className="flex gap-x-2 mt-2 sm:mt-0">
