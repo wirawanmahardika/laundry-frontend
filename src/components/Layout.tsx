@@ -1,4 +1,6 @@
-import { HandCoins, HandPlatter, User } from "lucide-react";
+import { HandPlatter, User } from "lucide-react";
+import { BiCart } from "react-icons/bi";
+import { TbUsersGroup } from "react-icons/tb";
 import { NavLink, Outlet, useMatches } from "react-router-dom";
 
 export default function Layout() {
@@ -16,12 +18,12 @@ export default function Layout() {
             </NavLink>
 
             <NavLink to={"/member"} className={`${matches[matches.length - 1].pathname === "/member" && "dock-active"}`}>
-                <HandCoins className="size-[1.2rem]" />
+                <TbUsersGroup className="size-[1.2rem]" />
                 <span className="dock-label">Member</span>
             </NavLink>
 
             <NavLink to={"/pesanan"} className={`${matches[matches.length - 1].pathname === "/pesanan" && "dock-active"}`}>
-                <HandCoins className="size-[1.2rem]" />
+                <BiCart className="size-[1.2rem]" />
                 <span className="dock-label">Pesanan</span>
             </NavLink>
 

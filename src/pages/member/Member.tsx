@@ -27,9 +27,15 @@ export default function Member() {
             </div>
 
             <div className="join mx-auto mt-4">
-                <button className="join-item btn btn-sm btn-outline">«</button>
-                <button className="join-item btn btn-sm btn-outline">Page 22</button>
-                <button className="join-item btn btn-sm btn-outline">»</button>
+                <button className="join-item btn btn-sm bg-base-100/90 border border-base-300 text-sky-700 shadow hover:bg-sky-100">
+                    «
+                </button>
+                <button className="join-item btn btn-sm bg-base-100/90 border border-base-300 text-sky-700 shadow hover:bg-sky-100">
+                    Page 22
+                </button>
+                <button className="join-item btn btn-sm bg-base-100/90 border border-base-300 text-sky-700 shadow hover:bg-sky-100">
+                    »
+                </button>
             </div>
         </div>
     );

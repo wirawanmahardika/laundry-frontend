@@ -15,104 +15,94 @@ import addLayananIcon from "../assets/img/add-layanan.png"
 import pesananIcon from "../assets/img/pesanan.png"
 import addPesananIcon from "../assets/img/add-pesanan.png"
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function Home() {
   return (
     <div className="container mx-auto max-w-4xl px-2">
-      <div className="font-bold text-xl">
+      <div className="font-bold text-xl mb-2">
         <span>Welcome </span>
         <span className="text-sky-500">Wirawan</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <span className="font-bold text-lg col-span-1 sm:col-span-2">Info Hari Ini</span>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-primary text-primary-content">
-          <span className="font-semibold">Rp {(9000000).toLocaleString("id")}</span>
-          <span>Kas</span>
+      {/* Info Hari Ini */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-3 w-full bg-base-100 rounded-xl p-3 sm:p-5 shadow-lg">
+        <span className="font-bold text-lg col-span-1 sm:col-span-2 mb-1">Info Hari Ini</span>
+        <div className="shadow rounded-xl flex flex-col gap-y-1 p-4 text-center bg-sky-100 text-sky-700 border border-sky-200">
+          <span className="font-semibold text-lg">Rp {(9000000).toLocaleString("id")}</span>
+          <span className="text-xs">Kas</span>
         </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-warning text-warning-content">
-          <span className="font-semibold">40 Order</span>
-          <span>Hari Ini</span>
+        <div className="shadow rounded-xl flex flex-col gap-y-1 p-4 text-center bg-cyan-100 text-cyan-700 border border-cyan-200">
+          <span className="font-semibold text-lg">40 Order</span>
+          <span className="text-xs">Hari Ini</span>
         </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-success text-success-content">
-          <span className="font-semibold">Rp {(1_400_000).toLocaleString("id")}</span>
-          <span>Pendapatan</span>
+        <div className="shadow rounded-xl flex flex-col gap-y-1 p-4 text-center bg-green-100 text-green-700 border border-green-200">
+          <span className="font-semibold text-lg">Rp {(1_400_000).toLocaleString("id")}</span>
+          <span className="text-xs">Pendapatan</span>
         </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-info text-info-content">
-          <span className="font-semibold">Rp {(800_000).toLocaleString("id")}</span>
-          <span>Pengeluaran</span>
-        </div>
-      </div>
-
-      <div className="flex flex-col justify-between mt-5 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg text-xs">
-        <span className="font-bold text-lg col-span-4">Akses Cepat</span>
-        <div className="flex justify-between">
-          <div className="grid grid-cols-2 text-center">
-            <span className="col-span-2 font-semibold">Pesanan</span>
-            <div className="flex flex-col items-center">
-              <img className="w-2/3" src={pesananIcon} alt="view-pesanan" />
-              <span>Detail</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <img className="w-2/3" src={addPesananIcon} alt="tambah-pesanan" />
-              <span>Tambah</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 text-center">
-            <span className="col-span-2 font-semibold">Layanan</span>
-            <div className="flex flex-col items-center">
-              <img className="w-2/3" src={layananIcon} alt="view-layanan" />
-              <span>Detail</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <img className="w-2/3" src={addLayananIcon} alt="tambah-layanan" />
-              <span>Tambah</span>
-            </div>
-          </div>
+        <div className="shadow rounded-xl flex flex-col gap-y-1 p-4 text-center bg-rose-100 text-rose-700 border border-rose-200">
+          <span className="font-semibold text-lg">Rp {(800_000).toLocaleString("id")}</span>
+          <span className="text-xs">Pengeluaran</span>
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <h2 className="font-bold text-lg">Daftar Orderan Terbaru</h2>
-
-        <div className="flex items-center p-3 text-sm shadow">
-          <div className="p-1 rounded mr-7">
-            <GiWashingMachine size={32} />
-          </div>
-          <div className="flex flex-col mr-auto">
-            <span className="font-semibold">Pesanan No #12343</span>
-            <span>Rp 200.000</span>
-          </div>
-          <div className="btn btn-primary btn-xs">Detail</div>
+      {/* Akses Cepat */}
+      <div className="flex flex-col justify-between mt-5 gap-2 w-full bg-base-100 rounded-xl p-3 sm:p-5 shadow-lg text-xs">
+        <span className="font-bold text-lg col-span-4 mb-1">Akses Cepat</span>
+        <div className="flex flex-col sm:flex-row gap-3 justify-between">
+          <div className="grid grid-cols-2 text-center gap-2 bg-sky-50 rounded-lg p-2 shadow">
+  <span className="col-span-2 font-semibold text-sky-700">Pesanan</span>
+  <div className="flex flex-col items-center">
+    <div className="bg-white/80 rounded-full p-2 shadow-md flex items-center justify-center w-16 h-16 mx-auto mb-1 overflow-hidden">
+      <img src={pesananIcon} alt="view-pesanan" />
+    </div>
+    <span>Detail</span>
+  </div>
+  <div className="flex flex-col items-center">
+    <div className="bg-white/80 rounded-full p-2 shadow-md flex items-center justify-center w-16 h-16 mx-auto mb-1 overflow-hidden">
+      <img src={addPesananIcon} alt="tambah-pesanan" />
+    </div>
+    <span>Tambah</span>
+  </div>
+</div>
+<div className="grid grid-cols-2 text-center gap-2 bg-cyan-50 rounded-lg p-2 shadow">
+  <span className="col-span-2 font-semibold text-cyan-700">Layanan</span>
+  <div className="flex flex-col items-center">
+    <div className="bg-white/80 rounded-full p-2 shadow-md flex items-center justify-center w-16 h-16 mx-auto mb-1 overflow-hidden">
+      <img src={layananIcon} alt="view-layanan" />
+    </div>
+    <span>Detail</span>
+  </div>
+  <div className="flex flex-col items-center">
+    <div className="bg-white/80 rounded-full p-2 shadow-md flex items-center justify-center w-16 h-16 mx-auto mb-1 overflow-hidden">
+      <img src={addLayananIcon} alt="tambah-layanan" />
+    </div>
+    <span>Tambah</span>
+  </div>
+</div>
         </div>
-
-        <div className="flex items-center p-3 text-sm shadow">
-          <div className="p-1 rounded mr-7">
-            <GiWashingMachine size={32} />
-          </div>
-          <div className="flex flex-col mr-auto">
-            <span className="font-semibold">Pesanan No #12343</span>
-            <span>Rp 200.000</span>
-          </div>
-          <div className="btn btn-primary btn-xs">Detail</div>
-        </div>
-
-        <div className="flex items-center p-3 text-sm shadow">
-          <div className="p-1 rounded mr-7">
-            <GiWashingMachine size={32} />
-          </div>
-          <div className="flex flex-col mr-auto">
-            <span className="font-semibold">Pesanan No #12343</span>
-            <span>Rp 200.000</span>
-          </div>
-          <div className="btn btn-primary btn-xs">Detail</div>
-        </div>
-
       </div>
 
-      <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <h2 className="font-bold text-lg">Bisnis Info By Grafik</h2>
+      {/* Daftar Orderan Terbaru */}
+      <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded-xl p-3 sm:p-5 shadow-lg">
+        <h2 className="font-bold text-lg mb-1">Daftar Orderan Terbaru</h2>
+        {[1, 2, 3].map((_, idx) => (
+          <div key={idx} className="flex items-center p-3 text-sm shadow rounded-lg bg-sky-50 border border-sky-100">
+            <div className="p-1 rounded mr-7 bg-white shadow">
+              <GiWashingMachine size={32} className="text-sky-400" />
+            </div>
+            <div className="flex flex-col mr-auto">
+              <span className="font-semibold">Pesanan No #{12343 + idx}</span>
+              <span className="text-sky-700">Rp 200.000</span>
+            </div>
+            <button className="btn btn-primary btn-xs rounded-full shadow">Detail</button>
+          </div>
+        ))}
+      </div>
+
+      {/* Grafik Pendapatan */}
+      <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded-xl p-3 sm:p-5 shadow-lg">
+        <h2 className="font-bold text-lg mb-1">Grafik Pendapatan</h2>
         <RevenueChart />
       </div>
     </div>
@@ -152,17 +142,24 @@ const data = [
   { day: "30 Jun", revenue: 1800000 },
 ];
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+const chartColors = [
+  "#38bdf8", // sky-400
+  "#06b6d4", // cyan-500
+  "#22d3ee", // cyan-300
+  "#4ade80", // green-400
+  "#f472b6", // pink-400
+  "#fbbf24", // yellow-400
+];
+
 const RevenueChart: React.FC = () => {
-  // Siapkan data untuk Chart.js
   const chartData = {
     labels: data.map((d) => d.day),
     datasets: [
       {
         label: "Pendapatan",
         data: data.map((d) => d.revenue),
-        backgroundColor: "#3b82f6",
-        borderRadius: 4,
+        backgroundColor: data.map((_, i) => chartColors[i % chartColors.length]),
+        borderRadius: 6,
         barPercentage: 0.7,
         categoryPercentage: 0.8,
       },
@@ -181,22 +178,22 @@ const RevenueChart: React.FC = () => {
     },
     scales: {
       x: {
-        ticks: { font: { size: 10 } },
+        ticks: { font: { size: 10 }, color: "#0ea5e9" }, // sky-500
         grid: { display: false },
       },
       y: {
         ticks: {
           font: { size: 10 },
+          color: "#0ea5e9",
           callback: (value) => `Rp${(+value / 1000).toLocaleString("id")}k`,
         },
-        grid: { color: "#eee" },
+        grid: { color: "#e0f2fe" }, // sky-100
       },
     },
   };
 
   return (
-    <div className="bg-base-100 p-2 sm:p-3 rounded-2xl w-full">
-      <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Grafik Pendapatan</h2>
+    <div className="bg-sky-50 rounded-xl p-3 sm:p-5 shadow border border-sky-100">
       <div className="w-full" style={{ minHeight: 180 }}>
         <Bar data={chartData} options={options} height={180} className="text-base-content" />
       </div>
