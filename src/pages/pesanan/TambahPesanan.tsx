@@ -28,19 +28,34 @@ export default function TambahPesanan() {
     const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0 })
     const [layanans, dispatch] = useReducer(reducer, [])
 
-    console.log(layanans);
     return <div className="flex items-center justify-center h-full">
         <form className="flex flex-col items-center gap-y-2 w-full h-full overflow-y-auto">
             <h2 className="font-bold text-2xl mb-4">Tambah Pesanan</h2>
+
             <div className="flex flex-col gap-y-1 w-4/5 mt-2">
                 <label className="font-semibold">Nama</label>
-                <input type="text" className="input" placeholder="Masukkan nama..." />
+                <input type="text" className="input" placeholder="Masukkan nama..." required />
+            </div>
+
+            <div className="flex flex-col gap-y-1 w-4/5 mt-2">
+                <label className="font-semibold">Phone</label>
+                <input type="text" className="input" placeholder="Masukkan phone..." />
+            </div>
+
+            <div className="flex flex-col gap-y-1 w-4/5 mt-2">
+                <label className="font-semibold">Email</label>
+                <input type="email" className="input" placeholder="Masukkan email..." />
+            </div>
+
+            <div className="flex flex-col gap-y-1 w-4/5 mt-2">
+                <label className="font-semibold">Diambil Pada</label>
+                <input type="datetime-local" className="input" placeholder="Masukkan tanggal pengambilan..." />
             </div>
 
             <div className="flex flex-col gap-y-2 w-4/5 mt-2">
                 <label className="font-semibold">Jumlah Layanan</label>
                 <div className="flex gap-x-2">
-                    <select onChange={(e) => setLayanan(p => ({ ...p, name: e.target.value }))} defaultValue="Layanan" className="select">
+                    <select onChange={(e) => setLayanan(p => ({ ...p, name: e.target.value }))} defaultValue="Layanan" className="select" required>
                         <option disabled={true}>Layanan</option>
                         <option>Express</option>
                         <option>Sprei</option>
