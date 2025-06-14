@@ -22,6 +22,7 @@ export default function DetailPesanan() {
             { id: 1, name: "Express", quantity: 2 },
             { id: 2, name: "Sprei", quantity: 1 },
         ] as LayananType[],
+        sudahBayar: true,
         buktiQris: "/img/qris.jpeg", // contoh url gambar bukti qris
     });
     const [editMode, setEditMode] = useState(false);
@@ -30,22 +31,25 @@ export default function DetailPesanan() {
     const [buktiQris, setBuktiQris] = useState(pesanan.buktiQris || "");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
+    const [sudahBayar, setSudahBayar] = useState<boolean>(false);
 
     const handleEdit = () => {
         setEditMode(true);
         setEditData(pesanan);
         setBuktiQris(pesanan.buktiQris || "");
+        setSudahBayar(pesanan.sudahBayar ?? false);
     };
 
     const handleSave = () => {
         setEditMode(false);
-        setPesanan({ ...editData, buktiQris });
+        setPesanan({ ...editData, buktiQris, sudahBayar });
     };
 
     const handleCancel = () => {
         setEditMode(false);
         setEditData(pesanan);
         setBuktiQris(pesanan.buktiQris || "");
+        setSudahBayar(pesanan.sudahBayar ?? false);
     };
 
     const handleAddLayanan = () => {
@@ -131,6 +135,18 @@ export default function DetailPesanan() {
                                 value={editData.diambilPada}
                                 onChange={e => setEditData({ ...editData, diambilPada: e.target.value })}
                             />
+                        </div>
+                        <div className="flex items-center gap-x-2 w-full mt-2">
+                            <input
+                                type="checkbox"
+                                id="sudahBayar"
+                                className="checkbox checkbox-primary"
+                                checked={sudahBayar}
+                                onChange={e => setSudahBayar(e.target.checked)}
+                            />
+                            <label htmlFor="sudahBayar" className="font-semibold text-slate-600 cursor-pointer">
+                                Tandai pesanan ini sudah dibayar
+                            </label>
                         </div>
                         {/* Tambah layanan */}
                         <div className="flex flex-col gap-y-2 w-full">
@@ -220,6 +236,11 @@ export default function DetailPesanan() {
                         <div className="flex flex-col sm:flex-row gap-2 w-full justify-center">
                             <span className="text-slate-500 text-sm">Phone: {pesanan.phone || <span className="italic text-rose-400">Tidak ada</span>}</span>
                             <span className="text-slate-500 text-sm">Email: {pesanan.email || <span className="italic text-rose-400">Tidak ada</span>}</span>
+                        </div>
+                        <div className="flex items-center gap-x-2 mt-3">
+                            <span className={`badge badge-${pesanan.sudahBayar ? "success" : "warning"} badge-md font-semibold`}>
+                                {pesanan.sudahBayar ? "Sudah Dibayar" : "Belum Dibayar"}
+                            </span>
                         </div>
                         <span className="text-slate-500 text-sm">
                             Diambil pada: {pesanan.diambilPada ? dayjs(pesanan.diambilPada).format("D MMMM YYYY HH:mm") : <span className="italic text-rose-400">Tidak ada</span>}

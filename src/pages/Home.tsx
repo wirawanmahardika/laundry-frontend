@@ -28,10 +28,6 @@ export default function Home() {
       {/* Info Hari Ini */}
       <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-3 w-full bg-base-100 rounded-xl p-3 sm:p-5 shadow-lg">
         <span className="font-bold text-lg col-span-1 sm:col-span-2 mb-1">Info Hari Ini</span>
-        <div className="shadow rounded-xl flex flex-col gap-y-1 p-4 text-center bg-sky-100 text-sky-700 border border-sky-200">
-          <span className="font-semibold text-lg">Rp {(9000000).toLocaleString("id")}</span>
-          <span className="text-xs">Kas</span>
-        </div>
         <div className="shadow rounded-xl flex flex-col gap-y-1 p-4 text-center bg-cyan-100 text-cyan-700 border border-cyan-200">
           <span className="font-semibold text-lg">40 Order</span>
           <span className="text-xs">Hari Ini</span>

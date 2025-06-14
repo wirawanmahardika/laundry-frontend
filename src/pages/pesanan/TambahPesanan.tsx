@@ -38,6 +38,7 @@ const benefitOptions = [
 ];
 
 export default function TambahPesanan() {
+    const [sudahBayar, setSudahBayar] = useState(false);
     const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0 });
     const [layanans, dispatch] = useReducer(reducer, []);
     const idRef = useRef(1);
@@ -188,6 +189,20 @@ export default function TambahPesanan() {
                         value={diambilPada}
                         onChange={e => setDiambilPada(e.target.value)}
                     />
+                </div>
+
+                {/* Input status pembayaran */}
+                <div className="flex items-center gap-x-2 w-full">
+                    <input
+                        type="checkbox"
+                        id="sudahBayar"
+                        className="checkbox checkbox-primary"
+                        checked={sudahBayar}
+                        onChange={e => setSudahBayar(e.target.checked)}
+                    />
+                    <label htmlFor="sudahBayar" className="font-semibold text-slate-600 cursor-pointer">
+                        Tandai pesanan ini sudah dibayar
+                    </label>
                 </div>
 
                 <div className="flex flex-col gap-y-2 w-full">
