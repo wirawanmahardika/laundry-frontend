@@ -110,7 +110,6 @@ function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps)
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex flex-col items-center justify-center">
                 <img src={pesananIcon} alt="icon-pesanan" className="w-14 h-14 rounded-full object-cover border-2 border-sky-200 shadow" />
-                <span className="mt-2 badge badge-outline badge-info text-[0.7rem] font-mono">{id}</span>
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>

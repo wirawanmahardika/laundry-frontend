@@ -183,7 +183,7 @@ export default function TambahPesanan() {
                 <div className="flex flex-col gap-y-1 w-full">
                     <label className="font-semibold text-slate-600">Diambil Pada</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="input input-bordered w-full"
                         placeholder="Masukkan tanggal pengambilan..."
                         value={diambilPada}

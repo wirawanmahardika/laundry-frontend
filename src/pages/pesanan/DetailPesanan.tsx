@@ -3,6 +3,8 @@ import { useState, useRef } from "react";
 import pesananIcon from "../../assets/img/pesanan.png";
 import { MdArrowBack, MdEdit } from "react-icons/md";
 import dayjs from "dayjs";
+import { FaWhatsapp } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 
 type LayananType = {
     id: number;
@@ -78,6 +80,33 @@ export default function DetailPesanan() {
             const url = URL.createObjectURL(file);
             setBuktiQris(url);
         }
+    };
+
+    // Fungsi kontak
+    const handleWhatsapp = () => {
+        if (pesanan.phone) {
+            window.open(`https://wa.me/${pesanan.phone.replace(/^0/, "62")}`, "_blank");
+        }
+    };
+    const handleEmail = () => {
+        if (pesanan.email) {
+            window.open(`mailto:${pesanan.email}`, "_blank");
+        }
+    };
+
+    const [showConfirmTolak, setShowConfirmTolak] = useState(false);
+    // Fungsi untuk menolak bukti QRIS dengan konfirmasi
+    const handleTolakQris = () => {
+        setShowConfirmTolak(true);
+    };
+
+    const confirmTolakQris = () => {
+        setPesanan(prev => ({ ...prev, buktiQris: "" }));
+        setShowConfirmTolak(false);
+    };
+
+    const cancelTolakQris = () => {
+        setShowConfirmTolak(false);
     };
 
     return (
@@ -237,6 +266,24 @@ export default function DetailPesanan() {
                             <span className="text-slate-500 text-sm">Phone: {pesanan.phone || <span className="italic text-rose-400">Tidak ada</span>}</span>
                             <span className="text-slate-500 text-sm">Email: {pesanan.email || <span className="italic text-rose-400">Tidak ada</span>}</span>
                         </div>
+                        <div className="flex gap-x-2 mt-2">
+                            <button
+                                className="btn btn-success btn-xs rounded-full flex items-center gap-x-1"
+                                onClick={handleWhatsapp}
+                                disabled={!pesanan.phone}
+                                type="button"
+                            >
+                                <FaWhatsapp /> Whatsapp
+                            </button>
+                            <button
+                                className="btn btn-info btn-xs rounded-full flex items-center gap-x-1"
+                                onClick={handleEmail}
+                                disabled={!pesanan.email}
+                                type="button"
+                            >
+                                <MdEmail /> Email
+                            </button>
+                        </div>
                         <div className="flex items-center gap-x-2 mt-3">
                             <span className={`badge badge-${pesanan.sudahBayar ? "success" : "warning"} badge-md font-semibold`}>
                                 {pesanan.sudahBayar ? "Sudah Dibayar" : "Belum Dibayar"}
@@ -268,11 +315,46 @@ export default function DetailPesanan() {
                                         className="w-full max-w-xs sm:max-w-sm md:max-w-md h-auto rounded-lg border border-sky-300 shadow-lg object-contain"
                                         style={{ background: "#fff" }}
                                     />
+                                    <button
+                                        className="btn btn-error btn-xs mt-4"
+                                        onClick={handleTolakQris}
+                                        type="button"
+                                    >
+                                        Tolak Bukti QRIS
+                                    </button>
                                 </div>
                             </div>
                         )}
                     </>
                 )}
+
+                {/* Popup Konfirmasi Tolak QRIS */}
+                {showConfirmTolak && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                        <div className="bg-base-100 rounded-xl shadow-lg p-6 w-full max-w-xs border border-base-300 flex flex-col items-center">
+                            <div className="font-bold text-lg text-rose-600 mb-2">Tolak Bukti QRIS?</div>
+                            <div className="text-center mb-4 text-slate-700">
+                                Apakah Anda yakin ingin <span className="font-semibold text-rose-600">menolak & menghapus</span> bukti pembayaran QRIS ini? <br />
+                                <span className="text-xs text-rose-400">Bukti akan dihapus permanen dari database.</span>
+                            </div>
+                            <div className="flex gap-x-2 mt-2">
+                                <button
+                                    className="btn btn-error btn-sm rounded-full"
+                                    onClick={confirmTolakQris}
+                                >
+                                    Ya, Hapus
+                                </button>
+                                <button
+                                    className="btn btn-ghost btn-sm rounded-full"
+                                    onClick={cancelTolakQris}
+                                >
+                                    Batal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="flex gap-x-2 mt-4">
                     {editMode ? (
                         <>
