@@ -27,20 +27,20 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 mt-3 gap-2 w-full bg-base-100 rounded p-3 sm:p-5 shadow-lg">
         <span className="font-bold text-lg col-span-1 sm:col-span-2">Info Hari Ini</span>
         <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-primary text-primary-content">
+          <span className="font-semibold">Rp {(9000000).toLocaleString("id")}</span>
+          <span>Kas</span>
+        </div>
+        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-warning text-warning-content">
           <span className="font-semibold">40 Order</span>
           <span>Hari Ini</span>
         </div>
-        <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-warning text-warning-content">
-          <span className="font-semibold">1</span>
-          <span>Sedang Diproses</span>
-        </div>
         <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-success text-success-content">
-          <span className="font-semibold">Rp {Number(1_400_000).toLocaleString("id")}</span>
+          <span className="font-semibold">Rp {(1_400_000).toLocaleString("id")}</span>
           <span>Pendapatan</span>
         </div>
         <div className="shadow-md rounded flex flex-col gap-y-1 p-3 text-center bg-info text-info-content">
-          <span className="font-semibold">120</span>
-          <span>Pelanggan</span>
+          <span className="font-semibold">Rp {(800_000).toLocaleString("id")}</span>
+          <span>Pengeluaran</span>
         </div>
       </div>
 
@@ -112,7 +112,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-y-3 mt-5 bg-base-100 rounded p-3 sm:p-5 shadow-lg">
-        <h2 className="font-bold text-lg">Bisnis Info</h2>
+        <h2 className="font-bold text-lg">Bisnis Info By Grafik</h2>
         <RevenueChart />
       </div>
     </div>
@@ -196,7 +196,7 @@ const RevenueChart: React.FC = () => {
 
   return (
     <div className="bg-base-100 p-2 sm:p-3 rounded-2xl w-full">
-      <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Grafik Pendapatan Bulan Ini</h2>
+      <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">Grafik Pendapatan</h2>
       <div className="w-full" style={{ minHeight: 180 }}>
         <Bar data={chartData} options={options} height={180} className="text-base-content" />
       </div>
