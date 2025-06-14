@@ -127,8 +127,7 @@ function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps)
             </div>
             <div className="col-span-5 flex flex-wrap gap-2 mt-2 justify-end">
                 <button className="btn btn-success btn-xs rounded-full shadow">Whatsapp</button>
-                <button className="btn btn-warning btn-xs rounded-full shadow">Ubah</button>
-                <button className="btn btn-info btn-xs rounded-full shadow">Detail</button>
+                <NavLink to={'/pesanan/detail'} className="btn btn-info btn-xs rounded-full shadow">Detail</NavLink>
                 <button className="btn btn-error btn-xs rounded-full shadow" onClick={onDelete}>Hapus</button>
             </div>
         </div>
