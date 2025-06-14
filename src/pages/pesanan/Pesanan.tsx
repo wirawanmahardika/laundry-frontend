@@ -2,8 +2,32 @@ import dayjs from "dayjs";
 import pesananIcon from "../../assets/img/pesanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 export default function Pesanan() {
+    const [showDelete, setShowDelete] = useState(false);
+    const [selectedPesanan, setSelectedPesanan] = useState<string | null>(null);
+
+    // Dummy data, ganti dengan data asli jika ada
+    const pesananList = [
+        { id: "P001", name: "Wirawan", biaya: 21000, status: "pelanggan", dibuat: dayjs().format("D MMM"), selesai: dayjs().add(2, "day").format("D MMM") },
+        { id: "P002", name: "Budi", biaya: 25000, status: "pelanggan", dibuat: dayjs().subtract(1, "day").format("D MMM"), selesai: dayjs().add(1, "day").format("D MMM") },
+        { id: "P003", name: "Tamu", biaya: 15000, status: "tamu", dibuat: dayjs().subtract(2, "day").format("D MMM"), selesai: dayjs().add(3, "day").format("D MMM") },
+        { id: "P004", name: "Tamu", biaya: 18000, status: "tamu", dibuat: dayjs().subtract(3, "day").format("D MMM"), selesai: dayjs().add(4, "day").format("D MMM") },
+    ];
+
+    const handleDelete = (id: string) => {
+        setSelectedPesanan(id);
+        setShowDelete(true);
+    };
+
+    const confirmDelete = () => {
+        // Lakukan aksi hapus di sini (misal API call)
+        setShowDelete(false);
+        setSelectedPesanan(null);
+        // Tampilkan notifikasi jika perlu
+    };
+
     return (
         <div className="container mx-auto max-w-4xl px-2 text-xs flex flex-col gap-y-4 py-4">
             <div className="flex justify-between items-center mb-2">
@@ -16,10 +40,18 @@ export default function Pesanan() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                <Card status="pelanggan" />
-                <Card status="pelanggan" />
-                <Card status="tamu" />
-                <Card status="tamu" />
+                {pesananList.map((p) => (
+                    <Card
+                        key={p.id}
+                        id={p.id}
+                        name={p.name}
+                        biaya={p.biaya}
+                        status={p.status as "pelanggan" | "tamu"}
+                        dibuat={p.dibuat}
+                        selesai={p.selesai}
+                        onDelete={() => handleDelete(p.id)}
+                    />
+                ))}
             </div>
 
             <div className="join mx-auto mt-4">
@@ -27,11 +59,47 @@ export default function Pesanan() {
                 <button className="join-item btn btn-sm bg-base-100/90 border border-base-300 text-sky-700 shadow hover:bg-sky-100">Page 22</button>
                 <button className="join-item btn btn-sm bg-base-100/90 border border-base-300 text-sky-700 shadow hover:bg-sky-100">»</button>
             </div>
+
+            {/* Popup Konfirmasi Hapus */}
+            {showDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                    <div className="bg-base-100 rounded-xl shadow-lg p-6 w-full max-w-xs border border-base-300 flex flex-col items-center">
+                        <div className="font-bold text-lg text-rose-600 mb-2">Hapus Pesanan?</div>
+                        <div className="text-center mb-4 text-slate-700">
+                            Apakah Anda yakin ingin menghapus pesanan <span className="font-semibold">{selectedPesanan}</span>?
+                        </div>
+                        <div className="flex gap-x-2 mt-2">
+                            <button
+                                className="btn btn-error btn-sm rounded-full"
+                                onClick={confirmDelete}
+                            >
+                                Ya, Hapus
+                            </button>
+                            <button
+                                className="btn btn-ghost btn-sm rounded-full"
+                                onClick={() => setShowDelete(false)}
+                            >
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-function Card({ status }: { status: "pelanggan" | "tamu" }) {
+type CardProps = {
+    id: string;
+    name: string;
+    biaya: number;
+    status: "pelanggan" | "tamu";
+    dibuat: string;
+    selesai: string;
+    onDelete?: () => void;
+};
+
+function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -39,14 +107,14 @@ function Card({ status }: { status: "pelanggan" | "tamu" }) {
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
-                    <span className="font-semibold text-base text-slate-800">Wirawan</span>
+                    <span className="font-semibold text-base text-slate-800">{name}</span>
                     <div className="text-xs text-slate-500 mt-1">
-                        Biaya: <span className="font-medium text-sky-600">Rp {(21_000).toLocaleString("id")}</span>
+                        Biaya: <span className="font-medium text-sky-600">Rp {biaya.toLocaleString("id")}</span>
                     </div>
                     <div className="text-xs text-slate-400">
-                        Dibuat: <span className="font-medium">{dayjs().format("D MMM")}</span>
+                        Dibuat: <span className="font-medium">{dibuat}</span>
                         {" | "}
-                        Estimasi Selesai: <span className="font-medium">{dayjs().format("D MMM")}</span>
+                        Estimasi Selesai: <span className="font-medium">{selesai}</span>
                     </div>
                 </div>
                 <button
@@ -60,7 +128,7 @@ function Card({ status }: { status: "pelanggan" | "tamu" }) {
                 <button className="btn btn-success btn-xs rounded-full shadow">Whatsapp</button>
                 <button className="btn btn-warning btn-xs rounded-full shadow">Ubah</button>
                 <button className="btn btn-info btn-xs rounded-full shadow">Detail</button>
-                <button className="btn btn-error btn-xs rounded-full shadow">Hapus</button>
+                <button className="btn btn-error btn-xs rounded-full shadow" onClick={onDelete}>Hapus</button>
             </div>
         </div>
     );

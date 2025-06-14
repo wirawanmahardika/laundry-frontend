@@ -2,8 +2,52 @@ import dayjs from "dayjs";
 import memberIcon from "../../assets/img/member.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 export default function Member() {
+    const [showDelete, setShowDelete] = useState(false);
+    const [selectedMember, setSelectedMember] = useState<string | null>(null);
+
+    // Dummy data, ganti dengan data asli jika ada
+    const members = [
+        {
+            name: "Wirawan",
+            joinedAt: dayjs().subtract(1, "month").format("D MMM YYYY"),
+            email: "wirawan@email.com",
+            phone: "08123456789",
+        },
+        {
+            name: "Tanpa Email",
+            joinedAt: dayjs().subtract(2, "month").format("D MMM YYYY"),
+            email: "",
+            phone: "08123456789",
+        },
+        {
+            name: "Tanpa HP",
+            joinedAt: dayjs().subtract(3, "month").format("D MMM YYYY"),
+            email: "nohp@email.com",
+            phone: "",
+        },
+        {
+            name: "Tanpa Email & HP",
+            joinedAt: dayjs().subtract(4, "month").format("D MMM YYYY"),
+            email: "",
+            phone: "",
+        },
+    ];
+
+    const handleDelete = (name: string) => {
+        setSelectedMember(name);
+        setShowDelete(true);
+    };
+
+    const confirmDelete = () => {
+        // Lakukan aksi hapus di sini (misal API call)
+        setShowDelete(false);
+        setSelectedMember(null);
+        // Tampilkan notifikasi jika perlu
+    };
+
     return (
         <div className="container mx-auto max-w-4xl px-2 text-xs flex flex-col gap-y-4 py-4">
             <div className="flex justify-between items-center mb-2">
@@ -17,31 +61,16 @@ export default function Member() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {/* Contoh data, bisa diganti dengan data asli */}
-                <Card
-                    name="Wirawan"
-                    joinedAt={dayjs().subtract(1, "month").format("D MMM YYYY")}
-                    email="wirawan@email.com"
-                    phone="08123456789"
-                />
-                <Card
-                    name="Tanpa Email"
-                    joinedAt={dayjs().subtract(2, "month").format("D MMM YYYY")}
-                    email=""
-                    phone="08123456789"
-                />
-                <Card
-                    name="Tanpa HP"
-                    joinedAt={dayjs().subtract(3, "month").format("D MMM YYYY")}
-                    email="nohp@email.com"
-                    phone=""
-                />
-                <Card
-                    name="Tanpa Email & HP"
-                    joinedAt={dayjs().subtract(4, "month").format("D MMM YYYY")}
-                    email=""
-                    phone=""
-                />
+                {members.map((m, i) => (
+                    <Card
+                        key={i}
+                        name={m.name}
+                        joinedAt={m.joinedAt}
+                        email={m.email}
+                        phone={m.phone}
+                        onDelete={() => handleDelete(m.name)}
+                    />
+                ))}
             </div>
 
             <div className="join mx-auto mt-4">
@@ -55,6 +84,32 @@ export default function Member() {
                     »
                 </button>
             </div>
+
+            {/* Popup Konfirmasi Hapus */}
+            {showDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                    <div className="bg-base-100 rounded-xl shadow-lg p-6 w-full max-w-xs border border-base-300 flex flex-col items-center">
+                        <div className="font-bold text-lg text-rose-600 mb-2">Hapus Member?</div>
+                        <div className="text-center mb-4 text-slate-700">
+                            Apakah Anda yakin ingin menghapus member <span className="font-semibold">{selectedMember}</span>?
+                        </div>
+                        <div className="flex gap-x-2 mt-2">
+                            <button
+                                className="btn btn-error btn-sm rounded-full"
+                                onClick={confirmDelete}
+                            >
+                                Ya, Hapus
+                            </button>
+                            <button
+                                className="btn btn-ghost btn-sm rounded-full"
+                                onClick={() => setShowDelete(false)}
+                            >
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -64,9 +119,10 @@ type CardProps = {
     joinedAt: string;
     email?: string;
     phone?: string;
+    onDelete?: () => void;
 };
 
-function Card({ name, joinedAt, email, phone }: CardProps) {
+function Card({ name, joinedAt, email, phone, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -96,8 +152,7 @@ function Card({ name, joinedAt, email, phone }: CardProps) {
                     </div>
                 </div>
                 <div className="flex gap-x-2 mt-2 sm:mt-0">
-                    <button className="btn btn-xs btn-error rounded-full shadow">Hapus</button>
-                    <button className="btn btn-xs btn-warning rounded-full shadow">Ubah</button>
+                    <button className="btn btn-xs btn-error rounded-full shadow" onClick={onDelete}>Hapus</button>
                     <NavLink to={"/member/detail"} className="btn btn-xs btn-info rounded-full shadow">Detail</NavLink>
                 </div>
             </div>

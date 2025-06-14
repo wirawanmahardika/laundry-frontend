@@ -2,8 +2,33 @@ import dayjs from "dayjs";
 import layananIcon from "../../assets/img/layanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 export default function Layanan() {
+    const [showDelete, setShowDelete] = useState(false);
+    const [selectedLayanan, setSelectedLayanan] = useState<string | null>(null);
+
+    // Dummy data, ganti dengan data asli jika ada
+    const layananList = [
+        { name: "Cuci Kering", price: 21000, satuan: "kg", addedAt: dayjs().format("D MMM YYYY") },
+        { name: "Cuci Setrika", price: 25000, satuan: "kg", addedAt: dayjs().subtract(1, "day").format("D MMM YYYY") },
+        { name: "Setrika Saja", price: 15000, satuan: "kg", addedAt: dayjs().subtract(2, "day").format("D MMM YYYY") },
+        { name: "Bed Cover", price: 35000, satuan: "pcs", addedAt: dayjs().subtract(3, "day").format("D MMM YYYY") },
+        // ...tambahkan data lain jika perlu
+    ];
+
+    const handleDelete = (name: string) => {
+        setSelectedLayanan(name);
+        setShowDelete(true);
+    };
+
+    const confirmDelete = () => {
+        // Lakukan aksi hapus di sini (misal API call)
+        setShowDelete(false);
+        setSelectedLayanan(null);
+        // Tampilkan notifikasi jika perlu
+    };
+
     return (
         <div className="container mx-auto max-w-4xl px-2 text-xs flex flex-col gap-y-4 py-4">
             <div className="flex justify-between items-center mb-2">
@@ -17,8 +42,15 @@ export default function Layanan() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {[...Array(8)].map((_, i) => (
-                    <Card key={i} />
+                {layananList.map((l, i) => (
+                    <Card
+                        key={i}
+                        name={l.name}
+                        price={l.price}
+                        satuan={l.satuan}
+                        addedAt={l.addedAt}
+                        onDelete={() => handleDelete(l.name)}
+                    />
                 ))}
             </div>
 
@@ -33,11 +65,45 @@ export default function Layanan() {
                     »
                 </button>
             </div>
+
+            {/* Popup Konfirmasi Hapus */}
+            {showDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                    <div className="bg-base-100 rounded-xl shadow-lg p-6 w-full max-w-xs border border-base-300 flex flex-col items-center">
+                        <div className="font-bold text-lg text-rose-600 mb-2">Hapus Layanan?</div>
+                        <div className="text-center mb-4 text-slate-700">
+                            Apakah Anda yakin ingin menghapus layanan <span className="font-semibold">{selectedLayanan}</span>?
+                        </div>
+                        <div className="flex gap-x-2 mt-2">
+                            <button
+                                className="btn btn-error btn-sm rounded-full"
+                                onClick={confirmDelete}
+                            >
+                                Ya, Hapus
+                            </button>
+                            <button
+                                className="btn btn-ghost btn-sm rounded-full"
+                                onClick={() => setShowDelete(false)}
+                            >
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-function Card() {
+type CardProps = {
+    name: string;
+    price: number;
+    satuan: string;
+    addedAt: string;
+    onDelete?: () => void;
+};
+
+function Card({ name, price, satuan, addedAt, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -45,15 +111,15 @@ function Card() {
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
-                    <span className="font-semibold text-base text-slate-800">Cuci Kering</span>
+                    <span className="font-semibold text-base text-slate-800">{name}</span>
                     <div className="text-xs text-slate-500 mt-1">
-                        <span className="font-medium text-sky-600">Rp {(21_000).toLocaleString("id")}/kg</span>
+                        <span className="font-medium text-sky-600">Rp {price.toLocaleString("id")}/{satuan}</span>
                     </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 mt-2 sm:mt-0">
-                    <span className="text-xs text-slate-400">Ditambahkan: {dayjs().format("D MMM YYYY")}</span>
+                    <span className="text-xs text-slate-400">Ditambahkan: {addedAt}</span>
                     <div className="flex gap-x-2">
-                        <button className="btn btn-xs btn-error rounded-full shadow">Hapus</button>
+                        <button className="btn btn-xs btn-error rounded-full shadow" onClick={onDelete}>Hapus</button>
                         <button className="btn btn-xs btn-warning rounded-full shadow">Ubah</button>
                     </div>
                 </div>
