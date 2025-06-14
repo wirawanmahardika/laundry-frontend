@@ -15,6 +15,11 @@ export default function Layout() {
                 <span className="dock-label">Beranda</span>
             </NavLink>
 
+            <NavLink to={"/member"} className={`${matches[matches.length - 1].pathname === "/member" && "dock-active"}`}>
+                <HandCoins className="size-[1.2rem]" />
+                <span className="dock-label">Member</span>
+            </NavLink>
+
             <NavLink to={"/pesanan"} className={`${matches[matches.length - 1].pathname === "/pesanan" && "dock-active"}`}>
                 <HandCoins className="size-[1.2rem]" />
                 <span className="dock-label">Pesanan</span>
