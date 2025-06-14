@@ -98,7 +98,7 @@ function Card({ name, joinedAt, email, phone }: CardProps) {
                 <div className="flex gap-x-2 mt-2 sm:mt-0">
                     <button className="btn btn-xs btn-error rounded-full shadow">Hapus</button>
                     <button className="btn btn-xs btn-warning rounded-full shadow">Ubah</button>
-                    <button className="btn btn-xs btn-info rounded-full shadow">Detail</button>
+                    <NavLink to={"/member/detail"} className="btn btn-xs btn-info rounded-full shadow">Detail</NavLink>
                 </div>
             </div>
         </div>
