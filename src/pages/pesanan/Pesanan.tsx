@@ -103,6 +103,9 @@ function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps)
     // Dummy: anggap pesanan dengan id genap sudah dibayar, ganjil belum
     const sudahDibayar = id.endsWith("2") || id.endsWith("4");
 
+    // Dummy: anggap pesanan dengan id "P002" dan "P004" sudah upload QRIS
+    const adaQrisBaru = id === "P002" || id === "P004";
+
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex flex-col items-center justify-center">
@@ -135,7 +138,14 @@ function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps)
             </div>
             <div className="col-span-5 flex flex-wrap gap-2 mt-2 justify-end">
                 <button className="btn btn-success btn-xs rounded-full shadow">Whatsapp</button>
-                <NavLink to={'/pesanan/detail'} className="btn btn-info btn-xs rounded-full shadow">Detail</NavLink>
+                <NavLink to={'/pesanan/detail'} className="btn btn-info btn-xs rounded-full shadow relative">
+                    Detail
+                    {adaQrisBaru && (
+                        <span className="absolute -top-2 -right-2 badge badge-error badge-xs animate-bounce">
+                            Baru
+                        </span>
+                    )}
+                </NavLink>
                 <button className="btn btn-error btn-xs rounded-full shadow" onClick={onDelete}>Hapus</button>
             </div>
         </div>

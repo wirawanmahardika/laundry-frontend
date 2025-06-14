@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import pesananIcon from "../../assets/img/pesanan.png";
-import { MdArrowBack } from "react-icons/md";
+import { MdArrowBack, MdEdit } from "react-icons/md";
 import dayjs from "dayjs";
 
 type LayananType = {
@@ -22,25 +22,30 @@ export default function DetailPesanan() {
             { id: 1, name: "Express", quantity: 2 },
             { id: 2, name: "Sprei", quantity: 1 },
         ] as LayananType[],
+        buktiQris: "/img/qris.jpeg", // contoh url gambar bukti qris
     });
     const [editMode, setEditMode] = useState(false);
     const [editData, setEditData] = useState(pesanan);
     const [layanan, setLayanan] = useState<LayananType>({ id: 0, name: "", quantity: 0 });
+    const [buktiQris, setBuktiQris] = useState(pesanan.buktiQris || "");
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
     const handleEdit = () => {
         setEditMode(true);
         setEditData(pesanan);
+        setBuktiQris(pesanan.buktiQris || "");
     };
 
     const handleSave = () => {
         setEditMode(false);
-        setPesanan(editData);
+        setPesanan({ ...editData, buktiQris });
     };
 
     const handleCancel = () => {
         setEditMode(false);
         setEditData(pesanan);
+        setBuktiQris(pesanan.buktiQris || "");
     };
 
     const handleAddLayanan = () => {
@@ -61,6 +66,14 @@ export default function DetailPesanan() {
             ...prev,
             layanans: prev.layanans.filter(l => l.id !== id)
         }));
+    };
+
+    const handleQrisChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setBuktiQris(url);
+        }
     };
 
     return (
@@ -173,6 +186,33 @@ export default function DetailPesanan() {
                                 </div>
                             ))}
                         </div>
+                        {/* Upload bukti pembayaran QRIS */}
+                        <div className="flex flex-col gap-y-1 w-full mt-3">
+                            <label className="font-semibold text-slate-600">Bukti Pembayaran QRIS</label>
+                            <div className="flex items-center gap-x-3">
+                                {buktiQris && (
+                                    <img
+                                        src={buktiQris}
+                                        alt="Bukti QRIS"
+                                        className="w-24 h-24 object-cover rounded-lg border border-sky-200 shadow"
+                                    />
+                                )}
+                                <button
+                                    type="button"
+                                    className="btn btn-xs btn-info rounded-full flex items-center gap-x-1"
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    <MdEdit size={14} /> {buktiQris ? "Ganti Foto" : "Upload Foto"}
+                                </button>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    ref={fileInputRef}
+                                    onChange={handleQrisChange}
+                                />
+                            </div>
+                        </div>
                     </>
                 ) : (
                     <>
@@ -196,6 +236,20 @@ export default function DetailPesanan() {
                                 </div>
                             ))}
                         </div>
+                        {/* Tampilkan bukti pembayaran QRIS jika ada */}
+                        {pesanan.buktiQris && (
+                            <div className="flex flex-col items-center w-full mt-6">
+                                <span className="font-semibold text-slate-600 mb-2">Bukti Pembayaran QRIS</span>
+                                <div className="bg-base-200 border border-sky-200 rounded-xl p-4 shadow flex flex-col items-center">
+                                    <img
+                                        src={pesanan.buktiQris}
+                                        alt="Bukti QRIS"
+                                        className="w-full max-w-xs sm:max-w-sm md:max-w-md h-auto rounded-lg border border-sky-300 shadow-lg object-contain"
+                                        style={{ background: "#fff" }}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
                 <div className="flex gap-x-2 mt-4">
