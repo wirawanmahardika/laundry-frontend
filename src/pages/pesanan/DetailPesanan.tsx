@@ -5,6 +5,7 @@ import { MdArrowBack, MdEdit } from "react-icons/md";
 import dayjs from "dayjs";
 import { FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import useAuth from "../../hooks/useAuth";
 
 type LayananType = {
     id: number;
@@ -13,6 +14,7 @@ type LayananType = {
 };
 
 export default function DetailPesanan() {
+    useAuth()
     // Dummy data, ganti dengan fetch dari API jika perlu
     const [pesanan, setPesanan] = useState({
         id: "P001",

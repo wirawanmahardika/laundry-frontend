@@ -3,8 +3,10 @@ import layananIcon from "../../assets/img/layanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
 
 export default function Layanan() {
+    useAuth()
     const [showDelete, setShowDelete] = useState(false);
     const [selectedLayanan, setSelectedLayanan] = useState<string | null>(null);
 

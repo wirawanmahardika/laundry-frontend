@@ -1,4 +1,7 @@
+import useAuth from "../../hooks/useAuth";
+
 export default function TambahLayanan() {
+    useAuth()
     return (
         <div className="flex items-center justify-center min-h-full">
             <form className="bg-base-100 rounded-xl shadow-lg p-8 flex flex-col items-center gap-y-4 w-full max-w-md border border-base-300">

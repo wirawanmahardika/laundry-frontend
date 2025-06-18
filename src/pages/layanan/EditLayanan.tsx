@@ -2,8 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import layananIcon from "../../assets/img/layanan.png";
 import { MdArrowBack } from "react-icons/md";
+import useAuth from "../../hooks/useAuth";
 
 export default function EditLayanan() {
+    useAuth()
     // Dummy data, ganti dengan fetch dari API jika perlu
     const [form, setForm] = useState({
         name: "Cuci Kering",

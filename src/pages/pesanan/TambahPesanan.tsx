@@ -1,4 +1,5 @@
 import { useReducer, useState, useRef } from "react";
+import useAuth from "../../hooks/useAuth";
 
 type stateType = {
     id: number;
@@ -38,6 +39,7 @@ const benefitOptions = [
 ];
 
 export default function TambahPesanan() {
+    useAuth()
     const [sudahBayar, setSudahBayar] = useState(false);
     const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0 });
     const [layanans, dispatch] = useReducer(reducer, []);

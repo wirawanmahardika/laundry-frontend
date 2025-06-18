@@ -5,8 +5,10 @@ import { FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { MdArrowBack } from "react-icons/md";
 import dayjs from "dayjs";
+import useAuth from "../../hooks/useAuth";
 
 export default function DetailMember() {
+    useAuth()
     // Dummy data, ganti dengan fetch dari API jika perlu
     const [member, setMember] = useState({
         name: "Wirawan Mahardika",

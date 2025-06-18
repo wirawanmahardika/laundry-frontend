@@ -3,8 +3,10 @@ import memberIcon from "../../assets/img/member.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
 
 export default function Member() {
+    useAuth()
     const [showDelete, setShowDelete] = useState(false);
     const [selectedMember, setSelectedMember] = useState<string | null>(null);
 

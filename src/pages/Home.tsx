@@ -14,10 +14,13 @@ import layananIcon from "../assets/img/layanan.png"
 import addLayananIcon from "../assets/img/add-layanan.png"
 import pesananIcon from "../assets/img/pesanan.png"
 import addPesananIcon from "../assets/img/add-pesanan.png"
+import useAuth from "../hooks/useAuth";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function Home() {
+  useAuth()
+
   return (
     <div className="container mx-auto max-w-4xl px-2">
       <div className="font-bold text-xl mb-2">

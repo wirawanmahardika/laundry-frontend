@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBack, MdEdit } from "react-icons/md";
+import useAuth from "../../hooks/useAuth";
 
 export default function EditProfil() {
+    useAuth()
     // Dummy data, ganti dengan fetch dari API jika perlu
     const [form, setForm] = useState({
         fullname: "Wirawan Mahardika",

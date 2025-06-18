@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import { AxiosAuth } from "../utils/axios"
 import Swal from 'sweetalert2'
+import { useAlreadyAuth } from "../hooks/useAuth"
 
 export default function Login() {
+    useAlreadyAuth()
     const navigate = useNavigate()
 
     const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
