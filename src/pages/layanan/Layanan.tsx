@@ -1,34 +1,43 @@
-import dayjs from "dayjs";
 import layananIcon from "../../assets/img/layanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import layananReducer from "../../hooks/reducer/layanan";
+import { AxiosAuth } from "../../utils/axios";
+import Swal from "sweetalert2";
 
 export default function Layanan() {
     useAuth()
+    const [layanans, dispatch] = useReducer(layananReducer, [])
     const [showDelete, setShowDelete] = useState(false);
-    const [selectedLayanan, setSelectedLayanan] = useState<string | null>(null);
+    const [selectedLayanan, setSelectedLayanan] = useState<{ id: number; name: string } | null>(null);
 
-    // Dummy data, ganti dengan data asli jika ada
-    const layananList = [
-        { name: "Cuci Kering", price: 21000, satuan: "kg", addedAt: dayjs().format("D MMM YYYY") },
-        { name: "Cuci Setrika", price: 25000, satuan: "kg", addedAt: dayjs().subtract(1, "day").format("D MMM YYYY") },
-        { name: "Setrika Saja", price: 15000, satuan: "kg", addedAt: dayjs().subtract(2, "day").format("D MMM YYYY") },
-        { name: "Bed Cover", price: 35000, satuan: "pcs", addedAt: dayjs().subtract(3, "day").format("D MMM YYYY") },
-        // ...tambahkan data lain jika perlu
-    ];
+    useEffect(() => {
+        AxiosAuth.get("/layanans").then(res => dispatch({ type: "get-all", payload: res.data.data }))
+    }, [])
 
-    const handleDelete = (name: string) => {
-        setSelectedLayanan(name);
+    const handleDelete = (id: number, name: string) => {
+        setSelectedLayanan({ id, name });
         setShowDelete(true);
     };
 
-    const confirmDelete = () => {
-        // Lakukan aksi hapus di sini (misal API call)
-        setShowDelete(false);
-        setSelectedLayanan(null);
-        // Tampilkan notifikasi jika perlu
+    const confirmDelete = (id: number) => async () => {
+        try {
+            const res = await AxiosAuth.delete("/layanan/" + id)
+            setShowDelete(false);
+            setSelectedLayanan(null);
+            dispatch({ type: "delete", payload: id })
+            await Swal.fire({
+                icon: "success",
+                text: res.data.message
+            })
+        } catch (error: any) {
+            await Swal.fire({
+                icon: "error",
+                text: error.response?.data?.message ?? "Terjadi kesalahan saat menghapus layanan"
+            })
+        }
     };
 
     return (
@@ -44,14 +53,14 @@ export default function Layanan() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {layananList.map((l, i) => (
+                {layanans.map((l, i) => (
                     <Card
                         key={i}
-                        name={l.name}
-                        price={l.price}
+                        nama={l.nama}
+                        harga={l.harga}
                         satuan={l.satuan}
-                        addedAt={l.addedAt}
-                        onDelete={() => handleDelete(l.name)}
+                        created_at={l.created_at}
+                        onDelete={() => handleDelete(l.id, l.nama)}
                     />
                 ))}
             </div>
@@ -74,12 +83,12 @@ export default function Layanan() {
                     <div className="bg-base-100 rounded-xl shadow-lg p-6 w-full max-w-xs border border-base-300 flex flex-col items-center">
                         <div className="font-bold text-lg text-rose-600 mb-2">Hapus Layanan?</div>
                         <div className="text-center mb-4 text-slate-700">
-                            Apakah Anda yakin ingin menghapus layanan <span className="font-semibold">{selectedLayanan}</span>?
+                            Apakah Anda yakin ingin menghapus layanan <span className="font-semibold">{selectedLayanan?.name}</span>?
                         </div>
                         <div className="flex gap-x-2 mt-2">
                             <button
                                 className="btn btn-error btn-sm rounded-full"
-                                onClick={confirmDelete}
+                                onClick={confirmDelete(selectedLayanan?.id ?? 0)}
                             >
                                 Ya, Hapus
                             </button>
@@ -98,14 +107,14 @@ export default function Layanan() {
 }
 
 type CardProps = {
-    name: string;
-    price: number;
+    nama: string;
+    harga: number;
     satuan: string;
-    addedAt: string;
+    created_at: string;
     onDelete?: () => void;
 };
 
-function Card({ name, price, satuan, addedAt, onDelete }: CardProps) {
+function Card({ nama, harga, satuan, created_at, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -113,13 +122,13 @@ function Card({ name, price, satuan, addedAt, onDelete }: CardProps) {
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
-                    <span className="font-semibold text-base text-slate-800">{name}</span>
+                    <span className="font-semibold text-base text-slate-800">{nama}</span>
                     <div className="text-xs text-slate-500 mt-1">
-                        <span className="font-medium text-sky-600">Rp {price.toLocaleString("id")}/{satuan}</span>
+                        <span className="font-medium text-sky-600">Rp {harga.toLocaleString("id")}/{satuan}</span>
                     </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 mt-2 sm:mt-0">
-                    <span className="text-xs text-slate-400">Ditambahkan: {addedAt}</span>
+                    <span className="text-xs text-slate-400">Ditambahkan: {created_at}</span>
                     <div className="flex gap-x-2">
                         <button className="btn btn-xs btn-error rounded-full shadow" onClick={onDelete}>Hapus</button>
                         <NavLink to={"/layanan/edit"} className="btn btn-xs btn-warning rounded-full shadow">Edit</NavLink>
