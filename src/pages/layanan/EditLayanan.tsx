@@ -1,28 +1,44 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import layananIcon from "../../assets/img/layanan.png";
 import { MdArrowBack } from "react-icons/md";
 import useAuth from "../../hooks/useAuth";
+import { AxiosAuth } from "../../utils/axios";
+import type { layananType } from "../../types/layananType";
+import Swal from "sweetalert2";
 
 export default function EditLayanan() {
     useAuth()
-    // Dummy data, ganti dengan fetch dari API jika perlu
-    const [form, setForm] = useState({
-        name: "Cuci Kering",
-        price: 21000,
-        satuan: "kg",
-    });
+    const { id } = useParams()
+    const [layanan, setLayanan] = useState<layananType>()
     const navigate = useNavigate();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    useEffect(() => {
+        AxiosAuth.get("/layanan/" + id)
+            .then(res => { setLayanan(res.data.data) })
+    }, [])
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Lakukan update ke backend di sini
-        // Setelah sukses:
-        navigate(-1); // Kembali ke daftar layanan atau detail layanan
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const body = {
+            nama: e.currentTarget.nama.value,
+            harga: parseInt(e.currentTarget.harga.value) ?? 0,
+            satuan: e.currentTarget.satuan.value
+        }
+
+        try {
+            const res = await AxiosAuth.put("/layanan/" + id, body)
+            await Swal.fire({
+                text: res.data.message,
+                icon: "success",
+            })
+            navigate(-1); // Kembali ke daftar layanan atau detail layanan
+        } catch (error: any) {
+            await Swal.fire({
+                text: error.response.data.message,
+                icon: "error",
+            })
+        }
     };
 
     return (
@@ -49,11 +65,10 @@ export default function EditLayanan() {
                     <label className="font-semibold text-slate-600">Nama Layanan</label>
                     <input
                         type="text"
-                        name="name"
+                        name="nama"
                         className="input input-bordered w-full"
                         placeholder="Nama layanan"
-                        value={form.name}
-                        onChange={handleChange}
+                        defaultValue={layanan?.nama}
                         required
                     />
                 </div>
@@ -61,29 +76,26 @@ export default function EditLayanan() {
                     <label className="font-semibold text-slate-600">Harga</label>
                     <input
                         type="number"
-                        name="price"
+                        name="harga"
                         className="input input-bordered w-full"
                         placeholder="Harga layanan"
-                        value={form.price}
-                        onChange={handleChange}
+                        defaultValue={layanan?.harga}
                         min={0}
                         required
                     />
                 </div>
                 <div className="flex flex-col gap-y-1 w-full">
                     <label className="font-semibold text-slate-600">Satuan</label>
-                    <select
+                    <input
+                        type="text"
                         name="satuan"
-                        className="select select-bordered w-full"
-                        value={form.satuan}
-                        onChange={handleChange}
+                        className="input input-bordered w-full"
+                        placeholder="Masukkan satuan..."
+                        defaultValue={layanan?.satuan}
                         required
-                    >
-                        <option value="kg">kg</option>
-                        <option value="pcs">pcs</option>
-                        <option value="meter">meter</option>
-                    </select>
+                    />
                 </div>
+
                 <button className="btn btn-primary btn-md mt-4 w-full shadow" type="submit">
                     Simpan Perubahan
                 </button>

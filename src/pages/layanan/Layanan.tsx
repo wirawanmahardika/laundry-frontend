@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import layananIcon from "../../assets/img/layanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
@@ -53,9 +54,10 @@ export default function Layanan() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {layanans.map((l, i) => (
+                {layanans.map((l) => (
                     <Card
-                        key={i}
+                        key={l.id}
+                        id={l.id}
                         nama={l.nama}
                         harga={l.harga}
                         satuan={l.satuan}
@@ -107,6 +109,7 @@ export default function Layanan() {
 }
 
 type CardProps = {
+    id: number;
     nama: string;
     harga: number;
     satuan: string;
@@ -114,7 +117,7 @@ type CardProps = {
     onDelete?: () => void;
 };
 
-function Card({ nama, harga, satuan, created_at, onDelete }: CardProps) {
+function Card({ id, nama, harga, satuan, created_at, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -128,10 +131,10 @@ function Card({ nama, harga, satuan, created_at, onDelete }: CardProps) {
                     </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-1 mt-2 sm:mt-0">
-                    <span className="text-xs text-slate-400">Ditambahkan: {created_at}</span>
+                    <span className="text-xs text-slate-400">Ditambahkan: {dayjs(created_at).format("DD MMMM YYYY HH:mm")}</span>
                     <div className="flex gap-x-2">
                         <button className="btn btn-xs btn-error rounded-full shadow" onClick={onDelete}>Hapus</button>
-                        <NavLink to={"/layanan/edit"} className="btn btn-xs btn-warning rounded-full shadow">Edit</NavLink>
+                        <NavLink to={"/layanan/edit/" + id} className="btn btn-xs btn-warning rounded-full shadow">Edit</NavLink>
                     </div>
                 </div>
             </div>

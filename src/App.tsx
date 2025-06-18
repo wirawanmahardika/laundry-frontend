@@ -37,7 +37,7 @@ const router = createBrowserRouter(
 
         <Route path="layanan" element={<Layanan />} />
         <Route path="layanan/tambah" element={<TambahLayanan />} />
-        <Route path="layanan/edit" element={<EditLayanan />} />
+        <Route path="layanan/edit/:id" element={<EditLayanan />} />
 
         <Route path="member" element={<Member />} />
         <Route path="member/tambah" element={<TambahMember />} />
