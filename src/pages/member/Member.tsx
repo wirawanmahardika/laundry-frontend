@@ -2,52 +2,44 @@ import dayjs from "dayjs";
 import memberIcon from "../../assets/img/member.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import memberReducer from "../../hooks/reducer/member";
+import { AxiosAuth } from "../../utils/axios";
+import Swal from "sweetalert2";
 
 export default function Member() {
     useAuth()
     const [showDelete, setShowDelete] = useState(false);
-    const [selectedMember, setSelectedMember] = useState<string | null>(null);
+    const [selectedMember, setSelectedMember] = useState<{ id: number; name: string } | null>(null);
+    const [members, dispatch] = useReducer(memberReducer, [])
 
-    // Dummy data, ganti dengan data asli jika ada
-    const members = [
-        {
-            name: "Wirawan",
-            joinedAt: dayjs().subtract(1, "month").format("D MMM YYYY"),
-            email: "wirawan@email.com",
-            phone: "08123456789",
-        },
-        {
-            name: "Tanpa Email",
-            joinedAt: dayjs().subtract(2, "month").format("D MMM YYYY"),
-            email: "",
-            phone: "08123456789",
-        },
-        {
-            name: "Tanpa HP",
-            joinedAt: dayjs().subtract(3, "month").format("D MMM YYYY"),
-            email: "nohp@email.com",
-            phone: "",
-        },
-        {
-            name: "Tanpa Email & HP",
-            joinedAt: dayjs().subtract(4, "month").format("D MMM YYYY"),
-            email: "",
-            phone: "",
-        },
-    ];
+    useEffect(() => {
+        AxiosAuth.get("/members").then(res => dispatch({ type: "get-all", payload: res.data.data }))
+    }, [])
 
-    const handleDelete = (name: string) => {
-        setSelectedMember(name);
+    const handleDelete = (id: number, name: string) => {
+        setSelectedMember({ id, name })
         setShowDelete(true);
     };
 
-    const confirmDelete = () => {
-        // Lakukan aksi hapus di sini (misal API call)
-        setShowDelete(false);
-        setSelectedMember(null);
-        // Tampilkan notifikasi jika perlu
+    const confirmDelete = async () => {
+        try {
+            if (selectedMember) {
+                const res = await AxiosAuth.delete("/member/" + selectedMember?.id)
+                if (selectedMember) dispatch({ type: "delete", payload: selectedMember?.id })
+                setShowDelete(false);
+                setSelectedMember(null);
+                Swal.fire({ text: res.data.message, icon: "success" })
+            }
+        } catch (error: any) {
+            await Swal.fire({
+                icon: "error",
+                text: Array.isArray(error.response?.data?.errors)
+                    ? error.response.data.errors.join(", ")
+                    : error.response?.data?.message ?? "Terjadi kesalahan saat mengupdate data member"
+            })
+        }
     };
 
     return (
@@ -66,11 +58,12 @@ export default function Member() {
                 {members.map((m, i) => (
                     <Card
                         key={i}
-                        name={m.name}
-                        joinedAt={m.joinedAt}
+                        id={m.id}
+                        nama={m.nama}
+                        createdAt={m.created_at}
                         email={m.email}
-                        phone={m.phone}
-                        onDelete={() => handleDelete(m.name)}
+                        whatsapp={m.whatsapp}
+                        onDelete={() => handleDelete(m.id, m.nama)}
                     />
                 ))}
             </div>
@@ -93,7 +86,7 @@ export default function Member() {
                     <div className="bg-base-100 rounded-xl shadow-lg p-6 w-full max-w-xs border border-base-300 flex flex-col items-center">
                         <div className="font-bold text-lg text-rose-600 mb-2">Hapus Member?</div>
                         <div className="text-center mb-4 text-slate-700">
-                            Apakah Anda yakin ingin menghapus member <span className="font-semibold">{selectedMember}</span>?
+                            Apakah Anda yakin ingin menghapus member <span className="font-semibold">{selectedMember?.name}</span>?
                         </div>
                         <div className="flex gap-x-2 mt-2">
                             <button
@@ -117,14 +110,15 @@ export default function Member() {
 }
 
 type CardProps = {
-    name: string;
-    joinedAt: string;
+    id: number;
+    nama: string;
+    createdAt: Date;
     email?: string;
-    phone?: string;
+    whatsapp?: string;
     onDelete?: () => void;
 };
 
-function Card({ name, joinedAt, email, phone, onDelete }: CardProps) {
+function Card({ id, nama, createdAt, email, whatsapp, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -132,22 +126,22 @@ function Card({ name, joinedAt, email, phone, onDelete }: CardProps) {
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
-                    <span className="font-semibold text-base text-slate-800">{name}</span>
+                    <span className="font-semibold text-base text-slate-800">{nama}</span>
                     <div className="text-xs text-slate-500 mt-1">
-                        Bergabung pada <span className="font-medium text-sky-600">{joinedAt}</span>
+                        Bergabung pada <span className="font-medium text-sky-600">{dayjs(createdAt).format("D MMM YYYY")}</span>
                     </div>
                     <div className="flex flex-col gap-y-1 mt-1">
                         <span className="flex items-center gap-x-1">
-                            <svg className="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07 7.07-1.42-1.42M6.34 6.34 4.93 4.93m12.02 0-1.41 1.41M6.34 17.66l-1.41 1.41" /></svg>
+                            <svg className="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z" /><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07 7.07-1.42-1.42M6.34 6.34 4.93 4.93m12.02 0-1.41 1.41M6.34 17.66l-1.41 1.41" /></svg>
                             {email
                                 ? <span className="text-slate-700">{email}</span>
                                 : <span className="italic text-rose-400">Tidak ada email</span>
                             }
                         </span>
                         <span className="flex items-center gap-x-1">
-                            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M2 2h20v20H2z" fill="none"/><path d="M6 8h12M6 12h8m-8 4h4" /></svg>
-                            {phone
-                                ? <span className="text-slate-700">{phone}</span>
+                            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M2 2h20v20H2z" fill="none" /><path d="M6 8h12M6 12h8m-8 4h4" /></svg>
+                            {whatsapp
+                                ? <span className="text-slate-700">{whatsapp}</span>
                                 : <span className="italic text-rose-400">Tidak ada nomor HP</span>
                             }
                         </span>
@@ -155,7 +149,7 @@ function Card({ name, joinedAt, email, phone, onDelete }: CardProps) {
                 </div>
                 <div className="flex gap-x-2 mt-2 sm:mt-0">
                     <button className="btn btn-xs btn-error rounded-full shadow" onClick={onDelete}>Hapus</button>
-                    <NavLink to={"/member/detail"} className="btn btn-xs btn-info rounded-full shadow">Detail</NavLink>
+                    <NavLink to={"/member/detail/" + id} className="btn btn-xs btn-info rounded-full shadow">Detail</NavLink>
                 </div>
             </div>
         </div>

@@ -41,7 +41,7 @@ const router = createBrowserRouter(
 
         <Route path="member" element={<Member />} />
         <Route path="member/tambah" element={<TambahMember />} />
-        <Route path="member/detail" element={<DetailMember />} />
+        <Route path="member/detail/:id" element={<DetailMember />} />
       </Route>
     </>
   )
