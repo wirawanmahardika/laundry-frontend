@@ -55,17 +55,23 @@ export default function Member() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {members.map((m, i) => (
-                    <Card
-                        key={i}
-                        id={m.id}
-                        nama={m.nama}
-                        createdAt={m.created_at}
-                        email={m.email}
-                        whatsapp={m.whatsapp}
-                        onDelete={() => handleDelete(m.id, m.nama)}
-                    />
-                ))}
+                {members.length === 0 ? (
+                    <div className="text-center italic py-8 bg-white/80 rounded-lg shadow text-slate-600 font-semibold">
+                        Tidak ada member yang terdaftar.
+                    </div>
+                ) : (
+                    members.map((m, i) => (
+                        <Card
+                            key={i}
+                            id={m.id}
+                            nama={m.nama}
+                            createdAt={m.created_at}
+                            email={m.email}
+                            whatsapp={m.whatsapp}
+                            onDelete={() => handleDelete(m.id, m.nama)}
+                        />
+                    ))
+                )}
             </div>
 
             <div className="join mx-auto mt-4">

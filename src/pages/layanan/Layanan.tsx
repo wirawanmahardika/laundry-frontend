@@ -54,17 +54,23 @@ export default function Layanan() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {layanans.map((l) => (
-                    <Card
-                        key={l.id}
-                        id={l.id}
-                        nama={l.nama}
-                        harga={l.harga}
-                        satuan={l.satuan}
-                        created_at={l.created_at}
-                        onDelete={() => handleDelete(l.id, l.nama)}
-                    />
-                ))}
+                {layanans.length === 0 ? (
+                    <div className="text-center italic py-8 bg-white/80 rounded-lg shadow text-slate-600 font-semibold">
+                        Tidak ada layanan yang terdaftar.
+                    </div>
+                ) : (
+                    layanans.map((l) => (
+                        <Card
+                            key={l.id}
+                            id={l.id}
+                            nama={l.nama}
+                            harga={l.harga}
+                            satuan={l.satuan}
+                            created_at={l.created_at}
+                            onDelete={() => handleDelete(l.id, l.nama)}
+                        />
+                    ))
+                )}
             </div>
 
             <div className="join mx-auto mt-4">
