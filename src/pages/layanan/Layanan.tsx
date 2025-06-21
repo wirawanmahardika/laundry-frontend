@@ -34,10 +34,12 @@ export default function Layanan() {
                 text: res.data.message
             })
         } catch (error: any) {
-            await Swal.fire({
-                icon: "error",
-                text: error.response?.data?.message ?? "Terjadi kesalahan saat menghapus layanan"
-            })
+            Swal.fire({
+                text: Array.isArray(error.response?.data?.errors)
+                    ? error.response.data.errors.join(", ")
+                    : (error.response?.data?.message ?? "terjadi kesalahan saat menghapus layanan"),
+                icon: "error"
+            });
         }
     };
 

@@ -13,7 +13,7 @@ export default function TambahLayanan() {
             harga: parseInt(e.currentTarget.harga.value) ?? 0,
             satuan: e.currentTarget.satuan.value
         }
-        
+
         try {
             const res = await AxiosAuth.post("/layanan", body)
             await Swal.fire({
@@ -23,11 +23,13 @@ export default function TambahLayanan() {
             navigate('/layanan')
         } catch (error: any) {
             Swal.fire({
-                text: error.response.data.message,
-                icon: "error",
-            })
+                text: Array.isArray(error.response?.data?.errors)
+                    ? error.response.data.errors.join(", ")
+                    : (error.response?.data?.message ?? "terjadi kesalahan saat tambah layanan"),
+                icon: "error"
+            });
         }
-        
+
     }
 
     return (
