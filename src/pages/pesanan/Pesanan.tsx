@@ -2,29 +2,34 @@ import dayjs from "dayjs";
 import pesananIcon from "../../assets/img/pesanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import transaksiReducer from "../../hooks/reducer/transaksi";
+import { AxiosAuth } from "../../utils/axios";
 
 export default function Pesanan() {
     useAuth()
     const [showDelete, setShowDelete] = useState(false);
-    const [selectedPesanan, setSelectedPesanan] = useState<string | null>(null);
+    const [selectedPesanan, setSelectedPesanan] = useState<number | null>(null);
 
     // Dummy data, ganti dengan data asli jika ada
-    const pesananList = [
-        { id: "P001", name: "Wirawan", biaya: 21000, status: "member", dibuat: dayjs().format("D MMM"), selesai: dayjs().add(2, "day").format("D MMM") },
-        { id: "P002", name: "Budi", biaya: 25000, status: "member", dibuat: dayjs().subtract(1, "day").format("D MMM"), selesai: dayjs().add(1, "day").format("D MMM") },
-        { id: "P003", name: "Tamu", biaya: 15000, status: "tamu", dibuat: dayjs().subtract(2, "day").format("D MMM"), selesai: dayjs().add(3, "day").format("D MMM") },
-        { id: "P004", name: "Tamu", biaya: 18000, status: "tamu", dibuat: dayjs().subtract(3, "day").format("D MMM"), selesai: dayjs().add(4, "day").format("D MMM") },
-    ];
+    const [pesanan, dispatch] = useReducer(transaksiReducer, [])
 
-    const handleDelete = (id: string) => {
+    useEffect(() => {
+        AxiosAuth.get("/transaksis").then(res => dispatch({ type: "get-all", payload: res.data.data }))
+    }, [])
+
+
+    console.log(pesanan);
+
+    const handleDelete = (id: number) => {
         setSelectedPesanan(id);
         setShowDelete(true);
     };
 
     const confirmDelete = () => {
-        // Lakukan aksi hapus di sini (misal API call)
+        if (!selectedPesanan) return
+        dispatch({ type: "delete", payload: selectedPesanan })
         setShowDelete(false);
         setSelectedPesanan(null);
         // Tampilkan notifikasi jika perlu
@@ -42,15 +47,18 @@ export default function Pesanan() {
             <Filter />
 
             <div className="flex flex-col gap-y-3">
-                {pesananList.map((p) => (
+                {pesanan.map((p) => (
                     <Card
                         key={p.id}
                         id={p.id}
-                        name={p.name}
-                        biaya={p.biaya}
-                        status={p.status as "member" | "tamu"}
-                        dibuat={p.dibuat}
-                        selesai={p.selesai}
+                        nama={p.nama}
+                        total_harga={p.total_harga}
+                        sudah_bayar={p.sudah_bayar}
+                        bukti={p.bukti}
+                        updated_at={p.updated_at}
+                        is_member={p.is_member}
+                        created_at={p.created_at}
+                        estimasi_selesai={p.estimasi_selesai}
                         onDelete={() => handleDelete(p.id)}
                     />
                 ))}
@@ -92,56 +100,55 @@ export default function Pesanan() {
 }
 
 type CardProps = {
-    id: string;
-    name: string;
-    biaya: number;
-    status: "member" | "tamu";
-    dibuat: string;
-    selesai: string;
+    id: number;
+    nama: string;
+    total_harga: number;
+    sudah_bayar: boolean;
+    bukti: string | null;
+    is_member: boolean;
+    estimasi_selesai: string;
+    created_at: string;
+    updated_at: string;
     onDelete?: () => void;
 };
 
-function Card({ id, name, biaya, status, dibuat, selesai, onDelete }: CardProps) {
-    // Dummy: anggap pesanan dengan id genap sudah dibayar, ganjil belum
-    const sudahDibayar = id.endsWith("2") || id.endsWith("4");
+function Card({ id, nama, total_harga, estimasi_selesai, sudah_bayar, created_at, is_member, bukti, onDelete }: CardProps) {
 
-    // Dummy: anggap pesanan dengan id "P002" dan "P004" sudah upload QRIS
-    const adaQrisBaru = id === "P002" || id === "P004";
 
     return (
-        <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
+        <div key={id} className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex flex-col items-center justify-center">
                 <img src={pesananIcon} alt="icon-pesanan" className="w-14 h-14 rounded-full object-cover border-2 border-sky-200 shadow" />
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
-                    <span className="font-semibold text-base text-slate-800">{name}</span>
+                    <span className="font-semibold text-base text-slate-800">{nama}</span>
                     <div className="flex gap-2 mt-1">
                         <span className="text-xs text-slate-500">
-                            Biaya: <span className="font-medium text-sky-600">Rp {biaya.toLocaleString("id")}</span>
+                            Biaya: <span className="font-medium text-sky-600">Rp {total_harga.toLocaleString("id")}</span>
                         </span>
-                        <span className={`badge badge-xs ${sudahDibayar ? "badge-success" : "badge-warning"} font-semibold`}>
-                            {sudahDibayar ? "Sudah Dibayar" : "Belum Dibayar"}
+                        <span className={`badge badge-xs ${sudah_bayar ? "badge-success" : "badge-warning"} font-semibold`}>
+                            {sudah_bayar ? "Sudah Dibayar" : "Belum Dibayar"}
                         </span>
                     </div>
                     <div className="text-xs text-slate-400">
-                        Dibuat: <span className="font-medium">{dibuat}</span>
+                        Dibuat: <span className="font-medium">{dayjs(created_at).format("D MMM YYYY, HH:mm")}</span>
                         {" | "}
-                        Estimasi Selesai: <span className="font-medium">{selesai}</span>
+                        Estimasi Selesai: <span className="font-medium">{dayjs(estimasi_selesai).format("D MMM YYYY, HH:mm")}</span>
                     </div>
                 </div>
                 <button
                     disabled
-                    className={`badge badge-xs capitalize ${status === "member" ? "badge-primary" : "badge-secondary"} px-3 py-2`}
+                    className={`badge badge-xs capitalize ${is_member ? "badge-primary" : "badge-secondary"} px-3 py-2`}
                 >
-                    {status}
+                    {is_member ? "member" : "tamu"}
                 </button>
             </div>
             <div className="col-span-5 flex flex-wrap gap-2 mt-2 justify-end">
                 <button className="btn btn-success btn-xs rounded-full shadow">Whatsapp</button>
                 <NavLink to={'/pesanan/detail'} className="btn btn-info btn-xs rounded-full shadow relative">
                     Detail
-                    {adaQrisBaru && (
+                    {bukti && (
                         <span className="absolute -top-2 -right-2 badge badge-error badge-xs animate-bounce">
                             Baru
                         </span>
