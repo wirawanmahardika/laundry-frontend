@@ -94,6 +94,11 @@ export default function DetailMember() {
                 ) : (
                     <span className="text-2xl font-bold text-slate-800">{member?.nama}</span>
                 )}
+                    <div className="flex items-center gap-x-2 mt-1">
+        <span className="badge badge-info badge-lg text-base font-semibold px-4 py-2">
+            Poin: {member?.poin ?? 0}
+        </span>
+    </div>
                 <span className="text-slate-500 text-sm">
                     Bergabung pada {dayjs(member?.created_at).format("D MMMM YYYY")}
                 </span>

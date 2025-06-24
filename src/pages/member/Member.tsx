@@ -68,6 +68,7 @@ export default function Member() {
                             createdAt={m.created_at}
                             email={m.email}
                             whatsapp={m.whatsapp}
+                            poin={m.poin}
                             onDelete={() => handleDelete(m.id, m.nama)}
                         />
                     ))
@@ -121,10 +122,11 @@ type CardProps = {
     createdAt: Date;
     email?: string;
     whatsapp?: string;
+    poin?: number;
     onDelete?: () => void;
 };
 
-function Card({ id, nama, createdAt, email, whatsapp, onDelete }: CardProps) {
+function Card({ id, nama, createdAt, email, whatsapp, poin, onDelete }: CardProps) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -133,6 +135,11 @@ function Card({ id, nama, createdAt, email, whatsapp, onDelete }: CardProps) {
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
                     <span className="font-semibold text-base text-slate-800">{nama}</span>
+                    <div className="mt-1">
+                        <span className="badge badge-info badge-sm font-semibold px-4 py-2">
+                            Poin: {poin ?? 0}
+                        </span>
+                    </div>
                     <div className="text-xs text-slate-500 mt-1">
                         Bergabung pada <span className="font-medium text-sky-600">{dayjs(createdAt).format("D MMM YYYY")}</span>
                     </div>

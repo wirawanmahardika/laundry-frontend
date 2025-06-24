@@ -4,6 +4,8 @@ export type memberType = {
     nama: string;
     email?: string;
     whatsapp?: string;
+    poin?: number;
+    diskon: number;
     created_at: Date;
     updated_at: Date;
     avgOrder?: number;
