@@ -5,6 +5,7 @@ export type layananType = {
     satuan: string,
     harga: number,
     created_at: string,
+    prioritas: number,
     updated_at: string,
 }
 

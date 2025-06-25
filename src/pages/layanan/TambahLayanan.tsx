@@ -11,6 +11,7 @@ export default function TambahLayanan() {
         const body = {
             nama: e.currentTarget.nama.value,
             harga: parseInt(e.currentTarget.harga.value) ?? 0,
+            prioritas: parseInt(e.currentTarget.prioritas.value) ?? 0,
             satuan: e.currentTarget.satuan.value
         }
 
@@ -47,6 +48,10 @@ export default function TambahLayanan() {
                 <div className="flex flex-col gap-y-1 w-full">
                     <label className="font-semibold text-slate-600">Harga</label>
                     <input type="number" name="harga" className="input input-bordered w-full" placeholder="Masukkan harga..." required />
+                </div>
+                <div className="flex flex-col gap-y-1 w-full">
+                    <label className="font-semibold text-slate-600">Prioritas</label>
+                    <input type="number" name="prioritas" className="input input-bordered w-full" placeholder="Masukkan nilai prioritas..." required />
                 </div>
                 <button className="btn btn-primary btn-md mt-4 w-full shadow">Tambah</button>
             </form>

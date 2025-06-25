@@ -68,6 +68,7 @@ export default function Layanan() {
                             nama={l.nama}
                             harga={l.harga}
                             satuan={l.satuan}
+                            prioritas={l.prioritas}
                             created_at={l.created_at}
                             onDelete={() => handleDelete(l.id, l.nama)}
                         />
@@ -122,10 +123,11 @@ type CardProps = {
     harga: number;
     satuan: string;
     created_at: string;
+    prioritas: number;
     onDelete?: () => void;
 };
 
-function Card({ id, nama, harga, satuan, created_at, onDelete }: CardProps) {
+function Card({ id, nama, harga, satuan, created_at, prioritas, onDelete }: CardProps & { prioritas?: number }) {
     return (
         <div className="grid grid-cols-5 gap-3 bg-base-100 shadow-md rounded-xl p-4 items-center border border-base-200">
             <div className="col-span-1 flex justify-center">
@@ -133,7 +135,15 @@ function Card({ id, nama, harga, satuan, created_at, onDelete }: CardProps) {
             </div>
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
-                    <span className="font-semibold text-base text-slate-800">{nama}</span>
+                    <span className="font-semibold text-base text-slate-800 flex items-center gap-x-2 justify-between">
+                        {nama}
+                        {prioritas !== undefined && (
+                            <span className="badge badge-secondary badge-sm px-2 py-1 flex items-center gap-x-1">
+                                <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z"/></svg>
+                                Prioritas {prioritas}
+                            </span>
+                        )}
+                    </span>
                     <div className="text-xs text-slate-500 mt-1">
                         <span className="font-medium text-sky-600">Rp {harga.toLocaleString("id")}/{satuan}</span>
                     </div>

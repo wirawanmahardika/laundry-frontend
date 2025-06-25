@@ -23,7 +23,8 @@ export default function EditLayanan() {
         const body = {
             nama: e.currentTarget.nama.value,
             harga: parseInt(e.currentTarget.harga.value) ?? 0,
-            satuan: e.currentTarget.satuan.value
+            satuan: e.currentTarget.satuan.value,
+            prioritas: parseInt(e.currentTarget.prioritas.value) ?? 0,
         }
 
         try {
@@ -32,12 +33,14 @@ export default function EditLayanan() {
                 text: res.data.message,
                 icon: "success",
             })
-            navigate(-1); // Kembali ke daftar layanan atau detail layanan
+            navigate(-1);
         } catch (error: any) {
-            await Swal.fire({
-                text: error.response.data.message,
-                icon: "error",
-            })
+            Swal.fire({
+                text: Array.isArray(error.response?.data?.errors)
+                    ? error.response.data.errors.join(", ")
+                    : (error.response?.data?.message ?? "terjadi kesalahan saat tambah layanan"),
+                icon: "error"
+            });
         }
     };
 
@@ -92,6 +95,18 @@ export default function EditLayanan() {
                         className="input input-bordered w-full"
                         placeholder="Masukkan satuan..."
                         defaultValue={layanan?.satuan}
+                        required
+                    />
+                </div>
+                <div className="flex flex-col gap-y-1 w-full">
+                    <label className="font-semibold text-slate-600">Prioritas</label>
+                    <input
+                        type="number"
+                        name="prioritas"
+                        className="input input-bordered w-full"
+                        placeholder="Prioritas Layanan"
+                        defaultValue={layanan?.prioritas}
+                        min={0}
                         required
                     />
                 </div>
