@@ -33,7 +33,8 @@ export default function DetailMember() {
         const body = {
             nama: editData?.nama,
             email: editData?.email || null,
-            whatsapp: editData?.whatsapp || null
+            whatsapp: editData?.whatsapp || null,
+            diskon: editData?.diskon || null
         }
 
         try {
@@ -102,6 +103,26 @@ export default function DetailMember() {
                         </span>
                     </span>
                 )}
+
+                <div className="flex items-center gap-x-2 mt-1">
+                    <span className="text-slate-600 font-semibold">Diskon Member:</span>
+                    {editMode ? (
+                        <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            className="input input-bordered input-sm w-20 text-center"
+                            value={editData?.diskon ?? 0}
+                            onChange={e => setEditData({ ...editData, diskon: Number(e.target.value) } as memberType)}
+                            placeholder="0"
+                        />
+                    ) : (
+                        <span className="badge badge-success badge-md font-bold px-3 py-1 shadow">
+                            {member?.diskon ?? 0}%
+                        </span>
+                    )}
+                </div>
+
                 <span className="text-slate-500 text-sm">
                     Bergabung pada {dayjs(member?.created_at).format("D MMMM YYYY")}
                 </span>
