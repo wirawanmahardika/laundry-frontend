@@ -92,13 +92,16 @@ export default function DetailMember() {
                         onChange={e => setEditData({ ...editData, nama: e.target.value } as memberType)}
                     />
                 ) : (
-                    <span className="text-2xl font-bold text-slate-800">{member?.nama}</span>
+                    <span className="text-2xl font-bold text-slate-800 flex items-center gap-y-2 flex-col">
+                        {member?.nama}
+                        <span className="badge badge-primary badge-lg font-bold px-3 py-1 flex items-center gap-x-1 shadow">
+                            <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.09 2.67 1.09-6.36L1 7.97l6.41-.93L10 1.9l2.59 5.14 6.41.93-4.64 4.34 1.09 6.36z" />
+                            </svg>
+                            {member?.poin ?? 0}
+                        </span>
+                    </span>
                 )}
-                    <div className="flex items-center gap-x-2 mt-1">
-        <span className="badge badge-info badge-lg text-base font-semibold px-4 py-2">
-            Poin: {member?.poin ?? 0}
-        </span>
-    </div>
                 <span className="text-slate-500 text-sm">
                     Bergabung pada {dayjs(member?.created_at).format("D MMMM YYYY")}
                 </span>

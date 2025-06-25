@@ -135,9 +135,13 @@ function Card({ id, nama, createdAt, email, whatsapp, poin, onDelete }: CardProp
             <div className="col-span-4 flex flex-col sm:flex-row sm:items-center justify-between gap-y-1">
                 <div>
                     <span className="font-semibold text-base text-slate-800">{nama}</span>
-                    <div className="mt-1">
-                        <span className="badge badge-info badge-sm font-semibold px-4 py-2">
-                            Poin: {poin ?? 0}
+                    <div className="flex gap-x-3 items-center">
+                        <span>Poin Loyality :</span>
+                        <span className="badge badge-primary badge-sm font-bold px-3 py-1 flex items-center gap-x-1 shadow">
+                            <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.09 2.67 1.09-6.36L1 7.97l6.41-.93L10 1.9l2.59 5.14 6.41.93-4.64 4.34 1.09 6.36z" />
+                            </svg>
+                            {poin ?? 0}
                         </span>
                     </div>
                     <div className="text-xs text-slate-500 mt-1">
