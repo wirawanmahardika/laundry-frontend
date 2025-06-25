@@ -1,5 +1,9 @@
-import { useReducer, useState, useRef } from "react";
+import { useReducer, useState, useRef, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
+import type { memberType } from "../../types/memberType";
+import { AxiosAuth } from "../../utils/axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 type stateType = {
     id: number;
@@ -23,55 +27,57 @@ function reducer(state: stateType[], action: actionType) {
     }
 }
 
-// Dummy data member
-const memberList = [
-    { id: 1, name: "Wirawan", email: "wirawan@email.com", phone: "08123456789", benefit: "Diskon 10% setiap transaksi" },
-    { id: 2, name: "Budi", email: "budi@email.com", phone: "08123456788", benefit: "Gratis cuci 1kg tiap 10kg" },
-];
-
-// Daftar keunggulan member yang bisa dipilih saat pemesanan
-const benefitOptions = [
-    "Diskon member",
-    "Prioritas antrian",
-    "Notifikasi khusus (WA/Email)",
-    "Layanan eksklusif/custom",
-    "Reminder pengambilan",
-];
-
 export default function TambahPesanan() {
     useAuth()
-    const [sudahBayar, setSudahBayar] = useState(false);
+    const navigate = useNavigate()
     const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0 });
     const [layanans, dispatch] = useReducer(reducer, []);
     const idRef = useRef(1);
 
+    const [members, setMembers] = useState<memberType[]>([])
+    useEffect(() => {
+        AxiosAuth.get("/members").then(res => setMembers(res.data.data))
+    }, [])
+
     // State untuk mode member/tamu
     const [isMember, setIsMember] = useState(false);
     const [selectedMember, setSelectedMember] = useState<number | null>(null);
+    const memberData = members.find(m => m.id === selectedMember);
 
     // State untuk input tamu
     const [nama, setNama] = useState("");
-    const [phone, setPhone] = useState("");
+    const [whatsapp, setWhatsapp] = useState("");
     const [email, setEmail] = useState("");
-    const [diambilPada, setDiambilPada] = useState("");
+    const [estimasiSelesai, setEstimasiSelesai] = useState("");
+    const [sudahBayar, setSudahBayar] = useState(false);
 
-    // State untuk keunggulan member (bisa multi select)
-    const [memberBenefits, setMemberBenefits] = useState<string[]>([]);
+    const tambahPesanan = async (e: any) => {
+        e.preventDefault()
+        const body = {
+            id_member: selectedMember || 0,
+            nama: nama,
+            whatsapp: whatsapp,
+            sudah_bayar: sudahBayar,
+            estimasi_selesai: estimasiSelesai ? new Date(estimasiSelesai).toISOString() : "",
+            layanans: layanans.map(l => ({ id: l.id, jumlah: l.quantity }))
+        }
+
+        try {
+            const res = await AxiosAuth.post("/transaksi", body, { headers: { "Content-Type": "application/json" } })
+            await Swal.fire({ text: res.data.message, icon: "success" })
+            navigate(-1)
+        } catch (error: any) {
+            Swal.fire({
+                text: Array.isArray(error.response?.data?.errors)
+                    ? error.response.data.errors.join(", ")
+                    : (error.response?.data?.message ?? "terjadi kesalahan saat membuat transaksi"),
+                icon: "error",
+            })
+        }
+    }
+
 
     const getId = () => idRef.current++;
-
-    // Ambil data member jika dipilih
-    const memberData = memberList.find(m => m.id === selectedMember);
-
-    // Handler untuk keunggulan member
-    const handleBenefitChange = (benefit: string) => {
-        setMemberBenefits(prev =>
-            prev.includes(benefit)
-                ? prev.filter(b => b !== benefit)
-                : [...prev, benefit]
-        );
-    };
-
     return (
         <div className="flex items-center justify-center min-h-screen">
             <form className="bg-base-100 rounded-xl shadow-lg p-8 flex flex-col items-center gap-y-4 w-full max-w-lg border border-base-300">
@@ -107,44 +113,16 @@ export default function TambahPesanan() {
                                 required
                             >
                                 <option value="" disabled>Pilih member...</option>
-                                {memberList.map(m => (
-                                    <option key={m.id} value={m.id}>{m.name}</option>
-                                ))}
+                                {members.map(m => (<option key={m.id} value={m.id}>{m.nama}</option>))}
                             </select>
                         </div>
                         {memberData && (
                             <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 w-full flex flex-col gap-y-1 mb-2">
-                                <span className="font-semibold text-sky-700">{memberData.name}</span>
+                                <span className="font-semibold text-sky-700">{memberData.nama}</span>
                                 <span className="text-xs text-slate-500">Email: {memberData.email}</span>
-                                <span className="text-xs text-slate-500">HP: {memberData.phone}</span>
-                                <span className="badge badge-success badge-sm mt-1">{memberData.benefit}</span>
+                                <span className="text-xs text-slate-500">HP: {memberData.whatsapp}</span>
                             </div>
                         )}
-
-                        {/* Input keunggulan member */}
-                        <div className="flex flex-col gap-y-1 w-full">
-                            <label className="font-semibold text-slate-600">Keunggulan Member (pilih sesuai pesanan)</label>
-                            <div className="flex flex-wrap gap-2">
-                                {benefitOptions.map(opt => (
-                                    <label key={opt} className="flex items-center gap-x-1 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="checkbox checkbox-xs"
-                                            checked={memberBenefits.includes(opt)}
-                                            onChange={() => handleBenefitChange(opt)}
-                                        />
-                                        <span className="text-xs">{opt}</span>
-                                    </label>
-                                ))}
-                            </div>
-                            {memberBenefits.length > 0 && (
-                                <div className="mt-1 flex flex-wrap gap-1">
-                                    {memberBenefits.map(b => (
-                                        <span key={b} className="badge badge-info badge-xs">{b}</span>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
                     </>
                 ) : (
                     <>
@@ -160,13 +138,13 @@ export default function TambahPesanan() {
                             />
                         </div>
                         <div className="flex flex-col gap-y-1 w-full">
-                            <label className="font-semibold text-slate-600">Phone</label>
+                            <label className="font-semibold text-slate-600">Whatsapp</label>
                             <input
                                 type="text"
                                 className="input input-bordered w-full"
                                 placeholder="Masukkan phone..."
-                                value={phone}
-                                onChange={e => setPhone(e.target.value)}
+                                value={whatsapp}
+                                onChange={e => setWhatsapp(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col gap-y-1 w-full">
@@ -188,8 +166,8 @@ export default function TambahPesanan() {
                         type="datetime-local"
                         className="input input-bordered w-full"
                         placeholder="Masukkan tanggal pengambilan..."
-                        value={diambilPada}
-                        onChange={e => setDiambilPada(e.target.value)}
+                        value={estimasiSelesai}
+                        onChange={e => setEstimasiSelesai(e.target.value)}
                     />
                 </div>
 
@@ -266,7 +244,7 @@ export default function TambahPesanan() {
                     ))}
                 </div>
 
-                <button className="btn btn-primary btn-md mt-3 w-full shadow">Tambah Pesanan</button>
+                <button onClick={tambahPesanan} className="btn btn-primary btn-md mt-3 w-full shadow">Tambah Pesanan</button>
             </form>
         </div>
     );
