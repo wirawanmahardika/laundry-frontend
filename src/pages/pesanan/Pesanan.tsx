@@ -223,14 +223,14 @@ function Filter({ onChangeFilter }: { onChangeFilter: (e: React.ChangeEvent<HTML
             <div className="flex gap-x-2">
                 <select onChange={onChangeFilter} name="status" defaultValue="Status" className="select select-sm w-1/2">
                     <option disabled={true}>Status</option>
-                    <option>-- Semua --</option>
+                    <option value={""}>-- Semua --</option>
                     <option>menunggu</option>
                     <option>proses</option>
                     <option>selesai</option>
                 </select>
                 <select onChange={onChangeFilter} name="layanan" defaultValue="Layanan" className="select select-sm w-1/2">
                     <option disabled={true}>Layanan</option>
-                    <option>-- Semua --</option>
+                    <option value={""}>-- Semua --</option>
                     {layanans?.map(l => {
                         return <option key={l.id} value={l.nama}>{l.nama}</option>
                     })}

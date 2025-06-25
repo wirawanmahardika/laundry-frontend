@@ -26,7 +26,6 @@ export default function Member() {
         }
 
         const id = setTimeout(() => {
-            console.log(filter);
             AxiosAuth.get("/members", { params: { nama: filter } })
                 .then(res => dispatch({ type: "get-all", payload: res.data.data }))
                 .catch(() => dispatch({ type: "get-all", payload: [] }))

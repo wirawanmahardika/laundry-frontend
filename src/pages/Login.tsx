@@ -21,7 +21,6 @@ export default function Login() {
             });
             navigate("/")
         } catch (error: any) {
-            console.log(error);
             Swal.fire({
                 title: "Login Gagal",
                 text: Array.isArray(error.response?.data?.errors)

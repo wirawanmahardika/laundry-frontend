@@ -17,7 +17,6 @@ export default function TambahMember() {
             await Swal.fire({ text: res.data.message, icon: "success" })
             navigate(-1)
         } catch (error: any) {
-            console.log(error);
             Swal.fire({
                 text: Array.isArray(error.response?.data?.errors)
                     ? error.response.data.errors.join(", ")

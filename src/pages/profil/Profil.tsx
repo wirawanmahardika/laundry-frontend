@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
 
 export default function Profil() {
     useAuth()
@@ -73,6 +74,32 @@ export default function Profil() {
                     <button className="btn btn-outline btn-xs btn-info rounded-full">Upgrade</button>
                     <button className="btn btn-outline btn-xs btn-error rounded-full">Cancel</button>
                 </div>
+            </div>
+
+
+            <div className="w-full flex justify-end mt-6">
+                <button
+                    className="btn btn-error btn-sm rounded-full px-6 shadow font-semibold flex items-center gap-x-2"
+                    onClick={async () => {
+                        const res = await Swal.fire({
+                            title: "Logout?",
+                            text: "Anda yakin ingin keluar?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Ya, Logout",
+                            cancelButtonText: "Batal"
+                        });
+                        if (res.isConfirmed) {
+                            localStorage.removeItem("token");
+                            window.location.href = "/login";
+                        }
+                    }}
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+                    </svg>
+                    Logout
+                </button>
             </div>
         </div>
     );
