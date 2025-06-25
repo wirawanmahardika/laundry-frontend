@@ -13,10 +13,26 @@ export default function Member() {
     const [showDelete, setShowDelete] = useState(false);
     const [selectedMember, setSelectedMember] = useState<{ id: number; name: string } | null>(null);
     const [members, dispatch] = useReducer(memberReducer, [])
+    const [filter, setFilter] = useState("")
+
+    const onFilterChange = (nama: string) => setFilter(nama)
 
     useEffect(() => {
-        AxiosAuth.get("/members").then(res => dispatch({ type: "get-all", payload: res.data.data }))
-    }, [])
+        if (!filter) {
+            AxiosAuth.get("/members")
+                .then(res => dispatch({ type: "get-all", payload: res.data.data }))
+                .catch(() => dispatch({ type: "get-all", payload: [] }))
+            return
+        }
+
+        const id = setTimeout(() => {
+            console.log(filter);
+            AxiosAuth.get("/members", { params: { nama: filter } })
+                .then(res => dispatch({ type: "get-all", payload: res.data.data }))
+                .catch(() => dispatch({ type: "get-all", payload: [] }))
+        }, 300);
+        return () => clearTimeout(id)
+    }, [filter])
 
     const handleDelete = (id: number, name: string) => {
         setSelectedMember({ id, name })
@@ -52,7 +68,7 @@ export default function Member() {
                 </NavLink>
             </div>
 
-            <Filter />
+            <Filter onFilterChange={onFilterChange} />
 
             <div className="flex flex-col gap-y-3">
                 {members.length === 0 ? (
@@ -173,7 +189,7 @@ function Card({ id, nama, createdAt, email, whatsapp, poin, onDelete }: CardProp
     );
 }
 
-function Filter() {
+function Filter({ onFilterChange }: { onFilterChange: (nama: string) => void }) {
     return (
         <div className="flex flex-col gap-y-2 mb-2">
             <label className="input input-bordered flex items-center gap-x-2 w-full bg-base-100">
@@ -189,7 +205,7 @@ function Filter() {
                         <path d="m21 21-4.3-4.3"></path>
                     </g>
                 </svg>
-                <input type="search" required placeholder="Cari member..." className="grow bg-transparent outline-none" />
+                <input type="search" onChange={(e) => onFilterChange(e.target.value)} required placeholder="Cari member..." className="grow bg-transparent outline-none" />
             </label>
         </div>
     );
