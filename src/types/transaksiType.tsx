@@ -5,6 +5,7 @@ export type transaksiType = {
     id_tenant: number;
     id_member: number | null;
     nama: string;
+    status: string;
     whatsapp: string;
     total_harga: number;
     email: string;
