@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import layananIcon from "../../assets/img/layanan.png"
 import { IoAdd } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
-import { useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import layananReducer from "../../hooks/reducer/layanan";
 import { AxiosAuth } from "../../utils/axios";
@@ -13,10 +13,27 @@ export default function Layanan() {
     const [layanans, dispatch] = useReducer(layananReducer, [])
     const [showDelete, setShowDelete] = useState(false);
     const [selectedLayanan, setSelectedLayanan] = useState<{ id: number; name: string } | null>(null);
+    const [filter, setFilter] = useState("")
+
+    const onFilterChange = useCallback((nama: string) => { setFilter(nama) }, [])
+
 
     useEffect(() => {
-        AxiosAuth.get("/layanans").then(res => dispatch({ type: "get-all", payload: res.data.data }))
-    }, [])
+        if (!filter) {
+            AxiosAuth.get("/layanans")
+                .then(res => dispatch({ type: "get-all", payload: res.data.data }))
+                .catch(() => dispatch({ type: "get-all", payload: [] }))
+            return
+        }
+
+
+        const id = setTimeout(() => {
+            AxiosAuth.get("/layanans", { params: { nama: filter } })
+                .then(res => { dispatch({ type: "get-all", payload: res.data.data }) })
+                .catch(() => dispatch({ type: "get-all", payload: [] }))
+        }, 300);
+        return () => clearTimeout(id)
+    }, [filter])
 
     const handleDelete = (id: number, name: string) => {
         setSelectedLayanan({ id, name });
@@ -53,7 +70,7 @@ export default function Layanan() {
                 </NavLink>
             </div>
 
-            <Filter />
+            <Filter onFilterChange={onFilterChange} />
 
             <div className="flex flex-col gap-y-3">
                 {layanans.length === 0 ? (
@@ -139,7 +156,7 @@ function Card({ id, nama, harga, satuan, created_at, prioritas, onDelete }: Card
                         {nama}
                         {prioritas !== undefined && (
                             <span className="badge badge-secondary badge-sm px-2 py-1 flex items-center gap-x-1">
-                                <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z"/></svg>
+                                <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" /></svg>
                                 Prioritas {prioritas}
                             </span>
                         )}
@@ -160,7 +177,7 @@ function Card({ id, nama, harga, satuan, created_at, prioritas, onDelete }: Card
     );
 }
 
-function Filter() {
+function Filter({ onFilterChange }: { onFilterChange: (nama: string) => void }) {
     return (
         <div className="flex flex-col gap-y-2 mb-2">
             <label className="input input-bordered flex items-center gap-x-2 w-full bg-base-100">
@@ -176,7 +193,7 @@ function Filter() {
                         <path d="m21 21-4.3-4.3"></path>
                     </g>
                 </svg>
-                <input type="search" required placeholder="Cari layanan..." className="grow bg-transparent outline-none" />
+                <input type="search" onChange={(e) => onFilterChange(e.target.value)} required placeholder="Cari layanan..." className="grow bg-transparent outline-none" />
             </label>
         </div>
     );
