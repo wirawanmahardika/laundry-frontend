@@ -1,4 +1,4 @@
-import { useReducer, useState, useRef, useEffect } from "react";
+import { useReducer, useState, useEffect } from "react";
 import useAuth from "../../hooks/useAuth";
 import type { memberType } from "../../types/memberType";
 import { AxiosAuth } from "../../utils/axios";
@@ -14,7 +14,7 @@ type stateType = {
 };
 
 type actionType = {
-    type: "tambah" | "hapus";
+    type: "tambah" | "hapus" | "replace";
     payload: stateType | stateType[];
 };
 
@@ -24,6 +24,9 @@ function reducer(state: stateType[], action: actionType) {
             return [...state, action.payload as stateType];
         case "hapus":
             return state.filter(s => s.id !== (action.payload as stateType).id);
+        case "replace":
+            const filteredState = state.filter(s => s.id !== (action.payload as stateType).id);
+            return [...filteredState, action.payload as stateType]
         default:
             return state;
     }
@@ -34,7 +37,6 @@ export default function TambahPesanan() {
     const navigate = useNavigate()
     const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0, satuan: "" });
     const [layanans, dispatch] = useReducer(reducer, []);
-    const idRef = useRef(1);
 
     const [members, setMembers] = useState<memberType[]>([])
     useEffect(() => {
@@ -83,8 +85,6 @@ export default function TambahPesanan() {
         }
     }
 
-
-    const getId = () => idRef.current++;
     return (
         <div className="flex items-center justify-center min-h-screen">
             <form className="bg-base-100 rounded-xl shadow-lg p-8 flex flex-col items-center gap-y-4 w-full max-w-lg border border-base-300">
@@ -196,13 +196,17 @@ export default function TambahPesanan() {
                     <label className="font-semibold text-slate-600">Tambah Layanan</label>
                     <div className="flex gap-x-2">
                         <select
-                            onChange={e => setLayanan(p => ({ ...p, name: e.target.value }))}
-                            value={layanan.name}
+                            onChange={e => {
+                                const selectedLayanan = layananOptions?.find(l => l.id === parseInt(e.target.value))
+                                if (selectedLayanan) setLayanan(p => ({ ...p, id: selectedLayanan.id, name: selectedLayanan.nama, satuan: selectedLayanan.satuan }))
+                                else setLayanan(p => ({ ...p, id: 0, name: "", quantity: 0, satuan: "" }))
+                            }}
+                            value={layanan.id}
                             className="select select-bordered w-1/2"
                         >
                             <option value="">Layanan</option>
                             {layananOptions?.map(p => {
-                                return <option key={p.id}>{p.nama}</option>
+                                return <option key={p.id} value={p.id}>{p.nama}</option>
                             })}
                         </select>
                         <input
@@ -218,8 +222,9 @@ export default function TambahPesanan() {
                         type="button"
                         onClick={() => {
                             if (layanan.name && layanan.quantity > 0) {
-                                dispatch({ type: "tambah", payload: { ...layanan, id: getId() } });
-                                setLayanan({ id: 0, name: "", quantity: 0, satuan: ""});
+                                if (layanans.find(l => l.id === layanan.id)) dispatch({ type: "replace", payload: layanan });
+                                else dispatch({ type: "tambah", payload: layanan });
+                                setLayanan(p => ({ ...p, id: 0, name: "", quantity: 0, satuan: "" }));
                             }
                         }}
                         className="btn btn-accent btn-sm w-fit self-end mt-1"
