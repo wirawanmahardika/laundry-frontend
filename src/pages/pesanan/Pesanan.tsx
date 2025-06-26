@@ -66,22 +66,28 @@ export default function Pesanan() {
             <Filter onChangeFilter={onChangeFilter} />
 
             <div className="flex flex-col gap-y-3">
-                {pesanan.map((p) => (
-                    <Card
-                        key={p.id}
-                        id={p.id}
-                        nama={p.nama}
-                        status={p.status}
-                        total_harga={p.total_harga}
-                        sudah_bayar={p.sudah_bayar}
-                        bukti={p.bukti}
-                        updated_at={p.updated_at}
-                        is_member={p.is_member}
-                        created_at={p.created_at}
-                        estimasi_selesai={p.estimasi_selesai}
-                        onDelete={() => handleDelete(p.id)}
-                    />
-                ))}
+                {pesanan.length === 0 ? (
+                    <div className="text-center italic py-8 bg-white/80 rounded-lg shadow text-slate-600 font-semibold">
+                        Tidak ada pesanan.
+                    </div>
+                ) : (
+                    pesanan.map((p) => (
+                        <Card
+                            key={p.id}
+                            id={p.id}
+                            nama={p.nama}
+                            status={p.status}
+                            total_harga={p.total_harga}
+                            sudah_bayar={p.sudah_bayar}
+                            bukti={p.bukti}
+                            updated_at={p.updated_at}
+                            is_member={p.is_member}
+                            created_at={p.created_at}
+                            estimasi_selesai={p.estimasi_selesai}
+                            onDelete={() => handleDelete(p.id)}
+                        />
+                    ))
+                )}
             </div>
 
             <div className="join mx-auto mt-4">

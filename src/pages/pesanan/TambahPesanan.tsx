@@ -4,11 +4,13 @@ import type { memberType } from "../../types/memberType";
 import { AxiosAuth } from "../../utils/axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import type { layananType } from "../../types/layananType";
 
 type stateType = {
     id: number;
     name: string;
     quantity: number;
+    satuan: string;
 };
 
 type actionType = {
@@ -30,13 +32,18 @@ function reducer(state: stateType[], action: actionType) {
 export default function TambahPesanan() {
     useAuth()
     const navigate = useNavigate()
-    const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0 });
+    const [layanan, setLayanan] = useState<stateType>({ id: 0, name: "", quantity: 0, satuan: "" });
     const [layanans, dispatch] = useReducer(reducer, []);
     const idRef = useRef(1);
 
     const [members, setMembers] = useState<memberType[]>([])
     useEffect(() => {
         AxiosAuth.get("/members").then(res => setMembers(res.data.data))
+    }, [])
+
+    const [layananOptions, setLayananOptions] = useState<layananType[]>()
+    useEffect(() => {
+        AxiosAuth.get("/layanans").then(res => setLayananOptions(res.data.data))
     }, [])
 
     // State untuk mode member/tamu
@@ -192,11 +199,11 @@ export default function TambahPesanan() {
                             onChange={e => setLayanan(p => ({ ...p, name: e.target.value }))}
                             value={layanan.name}
                             className="select select-bordered w-1/2"
-                            required
                         >
                             <option value="">Layanan</option>
-                            <option>Express</option>
-                            <option>Sprei</option>
+                            {layananOptions?.map(p => {
+                                return <option key={p.id}>{p.nama}</option>
+                            })}
                         </select>
                         <input
                             onChange={e => setLayanan(p => ({ ...p, quantity: parseInt(e.target.value) }))}
@@ -212,7 +219,7 @@ export default function TambahPesanan() {
                         onClick={() => {
                             if (layanan.name && layanan.quantity > 0) {
                                 dispatch({ type: "tambah", payload: { ...layanan, id: getId() } });
-                                setLayanan({ id: 0, name: "", quantity: 0 });
+                                setLayanan({ id: 0, name: "", quantity: 0, satuan: ""});
                             }
                         }}
                         className="btn btn-accent btn-sm w-fit self-end mt-1"
@@ -230,7 +237,7 @@ export default function TambahPesanan() {
                         <div key={l.id} className="flex justify-between items-center text-sm bg-base-100 rounded-lg px-3 py-2 shadow border border-base-200">
                             <span className="font-medium">{l.name}</span>
                             <div className="flex items-center gap-x-2">
-                                <span className="badge badge-info badge-sm">{l.quantity} Kg</span>
+                                <span className="badge badge-info badge-sm">{l.quantity} {l.satuan}</span>
                                 <button
                                     type="button"
                                     onClick={() => dispatch({ type: "hapus", payload: { ...layanan, id: l.id } })}
