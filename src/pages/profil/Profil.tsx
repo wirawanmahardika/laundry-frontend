@@ -1,21 +1,35 @@
 import { NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
+import type { profilType } from "../../types/profilType";
+import { AxiosAuth } from "../../utils/axios";
+import dayjs from "dayjs";
 
 export default function Profil() {
     useAuth()
+    const [profil, setProfil] = useState<profilType>()
+
+    useEffect(() => {
+        AxiosAuth.get("/tenant")
+            .then(res => setProfil(res.data.data))
+    }, [])
+
+    console.log(profil);
+
+
     return (
         <div className="container mx-auto max-w-2xl px-4 py-8 flex flex-col gap-y-6 items-center">
             <div className="flex flex-col items-center gap-y-2 w-full">
                 <div className="relative">
                     <img
                         className="rounded-full w-28 h-28 object-cover border-4 border-sky-400 shadow-lg"
-                        src="https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+                        src={profil?.image}
                         alt="Profile"
                     />
                     <span className="absolute bottom-2 right-2 bg-green-400 border-2 border-white rounded-full w-4 h-4 block"></span>
                 </div>
-                <span className="text-2xl font-bold text-slate-800">John Doe</span>
+                <span className="text-2xl font-bold text-slate-800">{profil?.nama}</span>
                 <span className="text-slate-500 text-sm">Laundry Owner</span>
             </div>
 
@@ -31,11 +45,11 @@ export default function Profil() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2 text-slate-700 text-sm">
                     <div className="flex flex-col gap-y-1">
                         <span className="text-slate-500">Fullname</span>
-                        <span className="font-medium">Wirawan Mahardika</span>
+                        <span className="font-medium">{profil?.nama_lengkap}</span>
                     </div>
                     <div className="flex flex-col gap-y-1">
                         <span className="text-slate-500">Email</span>
-                        <span className="font-medium">john@gmail.com</span>
+                        <span className="font-medium">{profil?.email}</span>
                     </div>
                     <div className="flex flex-col gap-y-1">
                         <span className="text-slate-500">Pendapatan</span>
@@ -43,7 +57,7 @@ export default function Profil() {
                     </div>
                     <div className="flex flex-col gap-y-1">
                         <span className="text-slate-500">Phone</span>
-                        <span className="font-medium">081234567890</span>
+                        <span className="font-medium">{profil?.phone}</span>
                     </div>
                 </div>
             </div>
@@ -59,15 +73,14 @@ export default function Profil() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2">
                     <div>
                         <span className="text-slate-500 text-sm">Status:</span>
-                        <span className="ml-2 font-semibold text-green-600">Active</span>
-                    </div>
-                    <div>
-                        <span className="text-slate-500 text-sm">Plan:</span>
-                        <span className="ml-2 font-semibold text-sky-700">Premium</span>
+                        {dayjs(profil?.masa_berlaku).isBefore(new Date()) ?
+                            <span className="ml-2 font-semibold text-green-600">Active</span> :
+                            <span className="ml-2 font-semibold text-red-600">Non Active</span>
+                        }
                     </div>
                     <div>
                         <span className="text-slate-500 text-sm">Berlaku sampai:</span>
-                        <span className="ml-2 font-semibold text-slate-700">31 Desember 2025</span>
+                        <span className="ml-2 font-semibold text-slate-700">{dayjs(profil?.masa_berlaku).format("D MMM YYYY")}</span>
                     </div>
                 </div>
                 <div className="flex gap-x-2 mt-2">
