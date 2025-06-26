@@ -240,7 +240,9 @@ export default function TambahPesanan() {
                                 <span className="badge badge-info badge-sm">{l.quantity} {l.satuan}</span>
                                 <button
                                     type="button"
-                                    onClick={() => dispatch({ type: "hapus", payload: { ...layanan, id: l.id } })}
+                                    onClick={() => {
+                                        dispatch({ type: "hapus", payload: { ...layanan, id: l.id } })
+                                    }}
                                     className="btn btn-error btn-xs text-white rounded-full"
                                     title="Hapus"
                                 >

@@ -7,6 +7,7 @@ import useAuth from "../../hooks/useAuth";
 import transaksiReducer from "../../hooks/reducer/transaksi";
 import { AxiosAuth } from "../../utils/axios";
 import type { layananType } from "../../types/layananType";
+import Swal from "sweetalert2";
 
 type filterType = {
     nama: string;
@@ -46,12 +47,22 @@ export default function Pesanan() {
         setShowDelete(true);
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         if (!selectedPesanan) return
-        dispatch({ type: "delete", payload: selectedPesanan })
+        try {
+            const res = await AxiosAuth.delete("/transaksi/" + selectedPesanan)
+            await Swal.fire({ text: res.data.message, icon: "success" })
+            dispatch({ type: "delete", payload: selectedPesanan })
+        } catch (error: any) {
+            await Swal.fire({
+                text: Array.isArray(error.response?.data?.errors)
+                ? error.response.data.errors.join(", ")
+                : (error.response?.data?.message ?? "terjadi kesalahan saat menghapus transaksi"),
+                icon: "error",
+            })
+        }
         setShowDelete(false);
         setSelectedPesanan(null);
-        // Tampilkan notifikasi jika perlu
     };
 
     return (
