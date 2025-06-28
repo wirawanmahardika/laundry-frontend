@@ -4,7 +4,7 @@ export type profilType = {
     phone: string;
     nama: string;
     nama_lengkap: string;
-    status: false,
+    status: boolean,
     masa_berlaku: string;
     image: string;
     created_at: string;

@@ -1,40 +1,52 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBack, MdEdit } from "react-icons/md";
 import useAuth from "../../hooks/useAuth";
+import { AxiosAuth } from "../../utils/axios";
+import type { profilType } from "../../types/profilType";
+import Swal from "sweetalert2";
 
 export default function EditProfil() {
     useAuth()
     // Dummy data, ganti dengan fetch dari API jika perlu
-    const [form, setForm] = useState({
-        fullname: "Wirawan Mahardika",
-        name: "Wirawan",
-        email: "john@gmail.com",
-        phone: "081234567890",
-        photo: "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
-    });
-    const [preview, setPreview] = useState(form.photo);
+    const [profil, setProfil] = useState<profilType>()
+    const [preview, setPreview] = useState(profil?.image);
+
+    useEffect(() => {
+        AxiosAuth.get("/tenant")
+            .then(res => {
+                setProfil(res.data.data)
+                setPreview(res.data.data.image)
+            })
+    }, [])
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
 
     const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const url = URL.createObjectURL(file);
             setPreview(url);
-            setForm({ ...form, photo: url });
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Lakukan update ke backend di sini
-        // Setelah sukses:
-        navigate(-1); // Kembali ke profil
+        const formData = new FormData(e.currentTarget)
+
+        try {
+            const res = await AxiosAuth.put("/tenant", formData)
+            await Swal.fire({ text: res.data, icon: "success" })
+            navigate(-1)
+        } catch (error: any) {
+            Swal.fire({
+                text: Array.isArray(error.response?.data?.errors)
+                    ? error.response.data.errors.join(", ")
+                    : (error.response?.data?.message ?? "terjadi kesalahan saat mengedit profil"),
+                icon: "error",
+            })
+        }
     };
 
     return (
@@ -66,6 +78,7 @@ export default function EditProfil() {
                         <MdEdit size={16} />
                     </button>
                     <input
+                        name="image"
                         type="file"
                         accept="image/*"
                         className="hidden"
@@ -78,11 +91,10 @@ export default function EditProfil() {
                     <label className="font-semibold text-slate-600">Nama</label>
                     <input
                         type="text"
-                        name="name"
+                        name="nama"
                         className="input input-bordered w-full"
                         placeholder="Nama singkat"
-                        value={form.name}
-                        onChange={handleChange}
+                        defaultValue={profil?.nama}
                         required
                     />
                 </div>
@@ -90,11 +102,10 @@ export default function EditProfil() {
                     <label className="font-semibold text-slate-600">Nama Lengkap</label>
                     <input
                         type="text"
-                        name="fullname"
+                        name="nama_lengkap"
                         className="input input-bordered w-full"
                         placeholder="Nama lengkap"
-                        value={form.fullname}
-                        onChange={handleChange}
+                        defaultValue={profil?.nama_lengkap}
                         required
                     />
                 </div>
@@ -105,8 +116,7 @@ export default function EditProfil() {
                         name="email"
                         className="input input-bordered w-full"
                         placeholder="Email"
-                        value={form.email}
-                        onChange={handleChange}
+                        defaultValue={profil?.email}
                         required
                     />
                 </div>
@@ -117,8 +127,7 @@ export default function EditProfil() {
                         name="phone"
                         className="input input-bordered w-full"
                         placeholder="Nomor HP"
-                        value={form.phone}
-                        onChange={handleChange}
+                        defaultValue={profil?.phone}
                         required
                     />
                 </div>
