@@ -1,4 +1,4 @@
-import type { layananType } from "./layananType"
+import type { transaksiLayananType } from "./transaksiLayananType";
 
 export type transaksiType = {
     id: number;
@@ -15,7 +15,7 @@ export type transaksiType = {
     estimasi_selesai: string;
     created_at: string;
     updated_at: string;
-    layanans?: layananType[];
+    layanans?: transaksiLayananType[];
 }
 
 export type transaksiReducerActionType = {

@@ -1,79 +1,87 @@
-import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
 import pesananIcon from "../../assets/img/pesanan.png";
 import { MdArrowBack, MdEdit } from "react-icons/md";
 import dayjs from "dayjs";
 import { FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import useAuth from "../../hooks/useAuth";
-
-type LayananType = {
-    id: number;
-    name: string;
-    quantity: number;
-};
+import { AxiosAuth } from "../../utils/axios";
+import type { transaksiType } from "../../types/transaksiType";
+import type { transaksiLayananType } from "../../types/transaksiLayananType";
 
 export default function DetailPesanan() {
     useAuth()
-    // Dummy data, ganti dengan fetch dari API jika perlu
-    const [pesanan, setPesanan] = useState({
-        id: "P001",
-        nama: "Wirawan",
-        phone: "08123456789",
-        email: "wirawan@email.com",
-        diambilPada: "2025-06-16T10:00",
-        layanans: [
-            { id: 1, name: "Express", quantity: 2 },
-            { id: 2, name: "Sprei", quantity: 1 },
-        ] as LayananType[],
-        sudahBayar: true,
-        buktiQris: "/img/qris.jpeg", // contoh url gambar bukti qris
-    });
+    const { id } = useParams()
+    const [transaksi, setTransaksi] = useState<transaksiType | null>(null)
     const [editMode, setEditMode] = useState(false);
-    const [editData, setEditData] = useState(pesanan);
-    const [layanan, setLayanan] = useState<LayananType>({ id: 0, name: "", quantity: 0 });
-    const [buktiQris, setBuktiQris] = useState(pesanan.buktiQris || "");
+    const [editData, setEditData] = useState<transaksiType | null>(null);
+    const [layanan, setLayanan] = useState<transaksiLayananType | null>(null);
+    const [buktiQris, setBuktiQris] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const [sudahBayar, setSudahBayar] = useState<boolean>(false);
+    useEffect(() => {
+        AxiosAuth.get("/transaksi/" + id)
+            .then(res => {
+                console.log(res);
+                setTransaksi(res.data.data)
+            })
+    }, [])
+
+    console.log(transaksi);
+
 
     const handleEdit = () => {
         setEditMode(true);
-        setEditData(pesanan);
-        setBuktiQris(pesanan.buktiQris || "");
-        setSudahBayar(pesanan.sudahBayar ?? false);
+        setEditData(transaksi);
+        setBuktiQris(transaksi?.bukti || "");
+        setSudahBayar(transaksi?.sudah_bayar ?? false);
     };
 
     const handleSave = () => {
+        if (!editData) return
         setEditMode(false);
-        setPesanan({ ...editData, buktiQris, sudahBayar });
+        setTransaksi({ ...editData, bukti: buktiQris, sudah_bayar: sudahBayar });
     };
 
     const handleCancel = () => {
         setEditMode(false);
-        setEditData(pesanan);
-        setBuktiQris(pesanan.buktiQris || "");
-        setSudahBayar(pesanan.sudahBayar ?? false);
+        setEditData(transaksi);
+        setBuktiQris(transaksi?.bukti || "");
+        setSudahBayar(transaksi?.sudah_bayar ?? false);
     };
 
     const handleAddLayanan = () => {
-        if (layanan.name && layanan.quantity > 0) {
-            setEditData(prev => ({
-                ...prev,
+        if (!layanan) return;
+        if (layanan.id_layanan && layanan.quantity > 0 && editData) {
+            setEditData({
+                ...editData,
                 layanans: [
-                    ...prev.layanans,
-                    { ...layanan, id: Date.now() }
+                    ...(editData.layanans || []),
+                    {
+                        id: 0,
+                        id_transaksi: editData.id,
+                        id_layanan: layanan.id_layanan,
+                        quantity: layanan.quantity,
+                        harga: 0,
+                        layanan: undefined
+                    }
                 ]
-            }));
-            setLayanan({ id: 0, name: "", quantity: 0 });
+            });
+            setLayanan({ id_layanan: 0, quantity: 0, id: 0, id_transaksi: 0, harga: 0 });
         }
     };
 
+
     const handleDeleteLayanan = (id: number) => {
-        setEditData(prev => ({
-            ...prev,
-            layanans: prev.layanans.filter(l => l.id !== id)
-        }));
+        setEditData(prev => {
+            if (!prev) return null;
+            return {
+                ...prev,
+                layanans: prev.layanans?.filter(l => l.id !== id)
+            }
+        });
     };
 
     const handleQrisChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,13 +94,13 @@ export default function DetailPesanan() {
 
     // Fungsi kontak
     const handleWhatsapp = () => {
-        if (pesanan.phone) {
-            window.open(`https://wa.me/${pesanan.phone.replace(/^0/, "62")}`, "_blank");
+        if (transaksi?.whatsapp) {
+            window.open(`https://wa.me/${transaksi.whatsapp.replace(/^0/, "62")}`, "_blank");
         }
     };
     const handleEmail = () => {
-        if (pesanan.email) {
-            window.open(`mailto:${pesanan.email}`, "_blank");
+        if (transaksi?.email) {
+            window.open(`mailto:${transaksi?.email}`, "_blank");
         }
     };
 
@@ -103,7 +111,10 @@ export default function DetailPesanan() {
     };
 
     const confirmTolakQris = () => {
-        setPesanan(prev => ({ ...prev, buktiQris: "" }));
+        setTransaksi(prev => {
+            if (!prev) return null;
+            return ({ ...prev, bukti: "" })
+        });
         setShowConfirmTolak(false);
     };
 
@@ -127,7 +138,7 @@ export default function DetailPesanan() {
                     src={pesananIcon}
                     alt="Pesanan"
                 />
-                <span className="badge badge-outline badge-info text-[0.8rem] font-mono mt-2">{pesanan.id}</span>
+                <span className="badge badge-outline badge-info text-[0.8rem] font-mono mt-2">{transaksi?.id}</span>
                 {editMode ? (
                     <>
                         <div className="flex flex-col gap-y-1 w-full">
@@ -135,8 +146,8 @@ export default function DetailPesanan() {
                             <input
                                 type="text"
                                 className="input input-bordered w-full"
-                                value={editData.nama}
-                                onChange={e => setEditData({ ...editData, nama: e.target.value })}
+                                value={editData?.nama}
+                                onChange={e => { if (!editData) return; setEditData({ ...editData, nama: e.target.value }) }}
                                 required
                             />
                         </div>
@@ -145,8 +156,8 @@ export default function DetailPesanan() {
                             <input
                                 type="text"
                                 className="input input-bordered w-full"
-                                value={editData.phone}
-                                onChange={e => setEditData({ ...editData, phone: e.target.value })}
+                                value={editData?.whatsapp}
+                                onChange={e => { if (!editData) return; setEditData({ ...editData, whatsapp: e.target.value }) }}
                             />
                         </div>
                         <div className="flex flex-col gap-y-1 w-full">
@@ -154,8 +165,8 @@ export default function DetailPesanan() {
                             <input
                                 type="email"
                                 className="input input-bordered w-full"
-                                value={editData.email}
-                                onChange={e => setEditData({ ...editData, email: e.target.value })}
+                                value={editData?.email}
+                                onChange={e => { if (!editData) return; setEditData({ ...editData, email: e.target.value }) }}
                             />
                         </div>
                         <div className="flex flex-col gap-y-1 w-full">
@@ -163,8 +174,8 @@ export default function DetailPesanan() {
                             <input
                                 type="datetime-local"
                                 className="input input-bordered w-full"
-                                value={editData.diambilPada}
-                                onChange={e => setEditData({ ...editData, diambilPada: e.target.value })}
+                                value={editData?.estimasi_selesai}
+                                onChange={e => { if (!editData) return; setEditData({ ...editData, estimasi_selesai: e.target.value }) }}
                             />
                         </div>
                         <div className="flex items-center gap-x-2 w-full mt-2">
@@ -184,8 +195,13 @@ export default function DetailPesanan() {
                             <label className="font-semibold text-slate-600">Tambah Layanan</label>
                             <div className="flex gap-x-2">
                                 <select
-                                    onChange={e => setLayanan(p => ({ ...p, name: e.target.value }))}
-                                    value={layanan.name}
+                                    onChange={e => {
+                                        setLayanan(p => {
+                                            if (!p || !p.layanan) return null
+                                            return { ...p, layanan: { ...p.layanan, nama: e.target.value } }
+                                        })
+                                    }}
+                                    value={layanan?.layanan?.nama}
                                     className="select select-bordered w-1/2"
                                     required
                                 >
@@ -194,10 +210,15 @@ export default function DetailPesanan() {
                                     <option>Sprei</option>
                                 </select>
                                 <input
-                                    onChange={e => setLayanan(p => ({ ...p, quantity: parseInt(e.target.value) }))}
+                                    onChange={e => setLayanan(p => {
+                                        if (!p) return null;
+                                        return {
+                                            ...p, quantity: parseInt(e.target.value)
+                                        }
+                                    })}
                                     type="number"
                                     min={1}
-                                    value={layanan.quantity || ""}
+                                    value={layanan?.quantity || ""}
                                     placeholder="Jumlah"
                                     className="input input-bordered w-1/2"
                                 />
@@ -213,12 +234,12 @@ export default function DetailPesanan() {
                         {/* Daftar layanan */}
                         <div className="flex flex-col gap-y-3 bg-base-200 rounded-xl shadow-inner w-full p-4 mt-2 border border-base-300">
                             <span className="font-bold text-sky-700">Daftar Layanan</span>
-                            {editData.layanans.length === 0 && (
+                            {editData?.layanans?.length === 0 && (
                                 <span className="text-slate-400 text-sm italic">Belum ada layanan ditambahkan.</span>
                             )}
-                            {editData.layanans.map(l => (
+                            {editData?.layanans?.map(l => (
                                 <div key={l.id} className="flex justify-between items-center text-sm bg-base-100 rounded-lg px-3 py-2 shadow border border-base-200">
-                                    <span className="font-medium">{l.name}</span>
+                                    <span className="font-medium">{l.layanan?.nama}</span>
                                     <div className="flex items-center gap-x-2">
                                         <span className="badge badge-info badge-sm">{l.quantity} Kg</span>
                                         <button
@@ -263,16 +284,16 @@ export default function DetailPesanan() {
                     </>
                 ) : (
                     <>
-                        <span className="text-2xl font-bold text-slate-800">{pesanan.nama}</span>
+                        <span className="text-2xl font-bold text-slate-800">{transaksi?.nama}</span>
                         <div className="flex flex-col sm:flex-row gap-2 w-full justify-center">
-                            <span className="text-slate-500 text-sm">Phone: {pesanan.phone || <span className="italic text-rose-400">Tidak ada</span>}</span>
-                            <span className="text-slate-500 text-sm">Email: {pesanan.email || <span className="italic text-rose-400">Tidak ada</span>}</span>
+                            <span className="text-slate-500 text-sm">Whatsapp: {transaksi?.whatsapp || <span className="italic text-rose-400">Tidak ada</span>}</span>
+                            <span className="text-slate-500 text-sm">Email: {transaksi?.email || <span className="italic text-rose-400">Tidak ada</span>}</span>
                         </div>
                         <div className="flex gap-x-2 mt-2">
                             <button
                                 className="btn btn-success btn-xs rounded-full flex items-center gap-x-1"
                                 onClick={handleWhatsapp}
-                                disabled={!pesanan.phone}
+                                disabled={!transaksi?.whatsapp}
                                 type="button"
                             >
                                 <FaWhatsapp /> Whatsapp
@@ -280,39 +301,39 @@ export default function DetailPesanan() {
                             <button
                                 className="btn btn-info btn-xs rounded-full flex items-center gap-x-1"
                                 onClick={handleEmail}
-                                disabled={!pesanan.email}
+                                disabled={!transaksi?.email}
                                 type="button"
                             >
                                 <MdEmail /> Email
                             </button>
                         </div>
                         <div className="flex items-center gap-x-2 mt-3">
-                            <span className={`badge badge-${pesanan.sudahBayar ? "success" : "warning"} badge-md font-semibold`}>
-                                {pesanan.sudahBayar ? "Sudah Dibayar" : "Belum Dibayar"}
+                            <span className={`badge badge-${transaksi?.sudah_bayar ? "success" : "warning"} badge-md font-semibold`}>
+                                {transaksi?.sudah_bayar ? "Sudah Dibayar" : "Belum Dibayar"}
                             </span>
                         </div>
                         <span className="text-slate-500 text-sm">
-                            Diambil pada: {pesanan.diambilPada ? dayjs(pesanan.diambilPada).format("D MMMM YYYY HH:mm") : <span className="italic text-rose-400">Tidak ada</span>}
+                            Diambil pada: {transaksi?.estimasi_selesai ? dayjs(transaksi.estimasi_selesai).format("D MMMM YYYY HH:mm") : <span className="italic text-rose-400">Tidak ada</span>}
                         </span>
                         <div className="flex flex-col gap-y-3 bg-base-200 rounded-xl shadow-inner w-full p-4 mt-2 border border-base-300">
                             <span className="font-bold text-sky-700">Daftar Layanan</span>
-                            {pesanan.layanans.length === 0 && (
+                            {transaksi?.layanans?.length === 0 && (
                                 <span className="text-slate-400 text-sm italic">Belum ada layanan ditambahkan.</span>
                             )}
-                            {pesanan.layanans.map(l => (
+                            {transaksi?.layanans?.map(l => (
                                 <div key={l.id} className="flex justify-between items-center text-sm bg-base-100 rounded-lg px-3 py-2 shadow border border-base-200">
-                                    <span className="font-medium">{l.name}</span>
+                                    <span className="font-medium">{l.layanan?.nama}</span>
                                     <span className="badge badge-info badge-sm">{l.quantity} Kg</span>
                                 </div>
                             ))}
                         </div>
                         {/* Tampilkan bukti pembayaran QRIS jika ada */}
-                        {pesanan.buktiQris && (
+                        {transaksi?.bukti && (
                             <div className="flex flex-col items-center w-full mt-6">
                                 <span className="font-semibold text-slate-600 mb-2">Bukti Pembayaran QRIS</span>
                                 <div className="bg-base-200 border border-sky-200 rounded-xl p-4 shadow flex flex-col items-center">
                                     <img
-                                        src={pesanan.buktiQris}
+                                        src={transaksi.bukti}
                                         alt="Bukti QRIS"
                                         className="w-full max-w-xs sm:max-w-sm md:max-w-md h-auto rounded-lg border border-sky-300 shadow-lg object-contain"
                                         style={{ background: "#fff" }}

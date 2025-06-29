@@ -126,8 +126,8 @@ export default function TambahPesanan() {
                         {memberData && (
                             <div className="bg-sky-50 border border-sky-200 rounded-lg p-3 w-full flex flex-col gap-y-1 mb-2">
                                 <span className="font-semibold text-sky-700">{memberData.nama}</span>
-                                <span className="text-xs text-slate-500">Email: {memberData.email}</span>
-                                <span className="text-xs text-slate-500">HP: {memberData.whatsapp}</span>
+                                <span className="text-xs text-slate-500">Email: {memberData.email ?? <span className="text-red-400 italic">None</span>}</span>
+                                <span className="text-xs text-slate-500">HP: {memberData.whatsapp ?? <span className="text-red-400 italic">None</span>}</span>
                             </div>
                         )}
                     </>
