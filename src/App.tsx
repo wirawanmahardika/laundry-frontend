@@ -19,6 +19,7 @@ import DetailMember from "./pages/member/DetailMember";
 import EditLayanan from "./pages/layanan/EditLayanan";
 import DetailPesanan from "./pages/pesanan/DetailPesanan";
 import EditProfil from "./pages/profil/EditProfil";
+import EditPesanan from "./pages/pesanan/EditPesanan";
 
 // const router = createHashRouter(
 const router = createBrowserRouter(
@@ -33,7 +34,8 @@ const router = createBrowserRouter(
 
         <Route path="pesanan" element={<Pesanan />} />
         <Route path="pesanan/tambah" element={<TambahPesanan />} />
-        <Route path="pesanan/:id/detail" element={<DetailPesanan />} />
+        <Route path="pesanan/:id" element={<DetailPesanan />} />
+        <Route path="pesanan/:id/edit" element={<EditPesanan />} />
 
         <Route path="layanan" element={<Layanan />} />
         <Route path="layanan/tambah" element={<TambahLayanan />} />

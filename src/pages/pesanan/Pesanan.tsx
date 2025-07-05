@@ -22,8 +22,6 @@ export default function Pesanan() {
     const [filter, setFilter] = useState<filterType | null>(null)
     const [pesanan, dispatch] = useReducer(transaksiReducer, [])
 
-
-
     useEffect(() => {
         if (!filter) {
             AxiosAuth.get("/transaksis",)
@@ -200,7 +198,7 @@ function Card({ id, nama, total_harga, estimasi_selesai, status, sudah_bayar, cr
             </div>
             <div className="col-span-5 flex flex-wrap gap-2 mt-2 justify-end">
                 <button className="btn btn-success btn-xs rounded-full shadow">Whatsapp</button>
-                <NavLink to={`/pesanan/${id}/detail`} className="btn btn-info btn-xs rounded-full shadow relative">
+                <NavLink to={`/pesanan/${id}`} className="btn btn-info btn-xs rounded-full shadow relative">
                     Detail
                     {bukti && (
                         <span className="absolute -top-2 -right-2 badge badge-error badge-xs animate-bounce">
