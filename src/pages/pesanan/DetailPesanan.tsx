@@ -32,7 +32,12 @@ export default function DetailPesanan() {
         }
     };
     const handleTolakQris = () => setShowConfirmTolak(true);
-    const confirmTolakQris = () => {
+    const confirmTolakQris = async () => {
+        try {
+            await AxiosAuth.delete(`/transaksi/${id}/payment/bukti`)
+        } catch (error) {
+            console.log(error);
+        }
         setTransaksi(prev => prev ? { ...prev, bukti: "" } : null);
         setShowConfirmTolak(false);
     };

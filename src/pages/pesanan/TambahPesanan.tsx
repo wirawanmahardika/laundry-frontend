@@ -62,6 +62,8 @@ export default function TambahPesanan() {
 
     const tambahPesanan = async (e: any) => {
         e.preventDefault()
+
+        if (layanans.length === 0) return Swal.fire({ icon: "error", title: "Error", text: "Pesanan wajib memiliki setidaknya satu layanan" })
         const body = {
             id_member: selectedMember || 0,
             nama: nama,
