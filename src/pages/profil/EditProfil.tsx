@@ -34,12 +34,23 @@ export default function EditProfil() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget)
-
+        Swal.fire({
+            icon: "info",
+            title: 'Memproses perubahan...',
+            text: 'Silakan tunggu sebentar',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
+        
         try {
             const res = await AxiosAuth.put("/tenant", formData)
             await Swal.fire({ text: res.data, icon: "success" })
             navigate(-1)
         } catch (error: any) {
+            console.log(error);
+
             Swal.fire({
                 text: Array.isArray(error.response?.data?.errors)
                     ? error.response.data.errors.join(", ")
