@@ -1,11 +1,11 @@
-import type { transaksiLayananType } from "./transaksiLayananType";
+import type { transaksiLayananType } from './transaksiLayananType';
 
 export type transaksiType = {
     id: number;
     id_tenant: number;
     id_member: number | null;
     nama: string;
-    status: string;
+    status: 'menunggu' | 'proses' | 'selesai';
     whatsapp: string;
     total_harga: number;
     email: string;
@@ -16,9 +16,9 @@ export type transaksiType = {
     created_at: string;
     updated_at: string;
     layanans?: transaksiLayananType[];
-}
+};
 
 export type transaksiReducerActionType = {
-    type: "get-all" | "delete",
-    payload: transaksiType[] | number
-}
+    type: 'get-all' | 'delete';
+    payload: transaksiType[] | number;
+};
